@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Trainer Booking: encuentra entrenadores certificados y reserva sesiones de entrenamiento." />
+  <meta name="theme-color" content="#050b19" />
+  <title>Portal de cliente | Trainer Booking</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23c8ff2c%22/><path d=%22M22 44h12v-8h8v28h-8v-8H22zm56 0H66v-8h-8v28h8v-8h12zM42 46h16v8H42z%22 fill=%22%23050b19%22/></svg>" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <header class="site-header" id="top">
+    <div class="container nav-wrap">
+      <a class="brand" href="cliente.html" aria-label="Trainer Booking - panel de cliente">
+        <span>TRAINER</span><strong>BOOKING</strong>
+      </a>
+      <nav class="desktop-nav" aria-label="Navegación principal">
+        <a href="#funcionalidades">Funcionalidades</a>
+        <a href="#entrenadores">Entrenadores</a>
+        <a href="#como-funciona">Cómo funciona</a>
+        <a href="#servicios">Servicios</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="link-button" data-action="open-dashboard">Mis reservas</button>
+        <button class="btn btn-small btn-primary" data-action="logout">Cerrar sesión</button>
+      </div>
+      <button class="menu-button" aria-label="Abrir menú" aria-expanded="false" data-action="toggle-menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="mobile-nav" data-mobile-menu>
+      <a href="#funcionalidades">Funcionalidades</a>
+      <a href="#entrenadores">Entrenadores</a>
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#servicios">Servicios</a>
+      <button class="link-button" data-action="open-dashboard">Mis reservas</button>
+      <button class="btn btn-primary" data-action="logout">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <img class="hero-image" src="assets/images/hero-athlete.jpg" alt="Persona entrenando en gimnasio" />
+      <div class="hero-shade"></div>
+      <div class="container hero-content">
+        <div class="eyebrow"><span></span> Plataforma profesional de entrenamiento</div>
+        <h1>Encuentra tu <em>entrenador</em> ideal y alcanza tus objetivos.</h1>
+        <p class="hero-copy">Reserva entrenamientos personalizados, consulta horarios disponibles y conecta con profesionales del fitness desde una sola aplicación.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#entrenadores">Buscar entrenador <span>→</span></a>
+          <button class="btn btn-secondary" data-action="open-dashboard">Mis reservas</button>
+        </div>
+        <div class="hero-proof">
+          <div class="avatar-stack" aria-label="Usuarios activos">
+            <img src="assets/images/trainer-carlos-avatar.jpg" alt="" />
+            <img src="assets/images/trainer-laura-avatar.jpg" alt="" />
+            <img src="assets/images/trainer-andres-avatar.jpg" alt="" />
+            <img src="assets/images/trainer-sofia-avatar.jpg" alt="" />
+          </div>
+          <div><div class="stars">★★★★★</div><strong>+12.000 usuarios activos</strong></div>
+          <span class="proof-divider"></span>
+          <div class="proof-item"><i>✓</i> Entrenadores certificados</div>
+          <div class="proof-item"><i>⌁</i> Pagos 100% seguros</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section trainers-section" id="entrenadores">
+      <div class="container">
+        <div class="section-heading split-heading">
+          <div>
+            <span class="section-kicker">Entrenadores disponibles</span>
+            <h2>Profesionales<br />certificados</h2>
+            <p>Cada entrenador ha sido verificado con sus credenciales y evaluado por nuestra comunidad.</p>
+          </div>
+          <button class="btn btn-outline" data-action="show-all-trainers">Ver todos los entrenadores <span>→</span></button>
+        </div>
+
+        <div class="filters" aria-label="Filtros de entrenadores">
+          <label><span>Buscar</span><input type="search" id="trainerSearch" placeholder="Nombre o especialidad" /></label>
+          <label><span>Ciudad</span><select id="cityFilter"><option value="">Todas</option><option>Cali</option><option>Bogotá</option><option>Medellín</option><option>Barranquilla</option></select></label>
+          <label><span>Modalidad</span><select id="modeFilter"><option value="">Todas</option><option>Presencial</option><option>Virtual</option></select></label>
+          <button class="filter-reset" data-action="reset-filters">Limpiar filtros</button>
+        </div>
+
+        <div class="trainer-grid" id="trainerGrid" aria-live="polite"><article class="trainer-card" data-trainer-id="1">
+      <div class="trainer-photo"><img src="assets/images/trainer-carlos.jpg" alt="Carlos Martínez" /><div class="photo-shade"></div><span class="availability-dot"><i></i> Disponible</span><span class="rating-pill">★ 4.9</span></div>
+      <div class="trainer-body"><h3>Carlos Martínez</h3><p>Entrenador profesional de fuerza e hipertrofia con enfoque técnico y progresivo.</p><div class="trainer-meta"><span>⌁ 8 años exp.</span><span>☷ 312 reseñas</span></div><div class="tag-list"><span>Fuerza</span><span>Hipertrofia</span></div><div class="next-slot"><i>◷</i><div><strong>Disponible Hoy 6:00 PM</strong><small>Próximo horario libre</small></div></div><div class="trainer-footer"><div><small>Sesión desde</small><strong>$80.000</strong></div><button class="btn btn-primary btn-card" data-action="view-trainer" data-id="1">Ver perfil</button></div></div>
+    </article><article class="trainer-card" data-trainer-id="2">
+      <div class="trainer-photo"><img src="assets/images/trainer-laura.jpg" alt="Laura Martínez" /><div class="photo-shade"></div><span class="availability-dot"><i></i> Disponible</span><span class="rating-pill">★ 5.0</span></div>
+      <div class="trainer-body"><h3>Laura Martínez</h3><p>Especialista en yoga, movilidad y recuperación funcional para todos los niveles.</p><div class="trainer-meta"><span>⌁ 6 años exp.</span><span>☷ 198 reseñas</span></div><div class="tag-list"><span>Yoga</span><span>Movilidad</span></div><div class="next-slot"><i>◷</i><div><strong>Disponible Mañana 8:00 AM</strong><small>Próximo horario libre</small></div></div><div class="trainer-footer"><div><small>Sesión desde</small><strong>$65.000</strong></div><button class="btn btn-primary btn-card" data-action="view-trainer" data-id="2">Ver perfil</button></div></div>
+    </article><article class="trainer-card" data-trainer-id="3">
+      <div class="trainer-photo"><img src="assets/images/trainer-andres.jpg" alt="Andrés López" /><div class="photo-shade"></div><span class="availability-dot"><i></i> Disponible</span><span class="rating-pill">★ 4.8</span></div>
+      <div class="trainer-body"><h3>Andrés López</h3><p>Entrenamiento de CrossFit y cardio con planificación por objetivos.</p><div class="trainer-meta"><span>⌁ 10 años exp.</span><span>☷ 541 reseñas</span></div><div class="tag-list"><span>CrossFit</span><span>Cardio</span></div><div class="next-slot"><i>◷</i><div><strong>Disponible Hoy 8:00 PM</strong><small>Próximo horario libre</small></div></div><div class="trainer-footer"><div><small>Sesión desde</small><strong>$90.000</strong></div><button class="btn btn-primary btn-card" data-action="view-trainer" data-id="3">Ver perfil</button></div></div>
+    </article><article class="trainer-card" data-trainer-id="4">
+      <div class="trainer-photo"><img src="assets/images/trainer-sofia.jpg" alt="Sofía Hernández" /><div class="photo-shade"></div><span class="availability-dot"><i></i> Disponible</span><span class="rating-pill">★ 4.9</span></div>
+      <div class="trainer-body"><h3>Sofía Hernández</h3><p>Entrenadora funcional enfocada en fuerza, core y hábitos sostenibles.</p><div class="trainer-meta"><span>⌁ 5 años exp.</span><span>☷ 227 reseñas</span></div><div class="tag-list"><span>Funcional</span><span>Core</span></div><div class="next-slot"><i>◷</i><div><strong>Disponible Hoy 7:00 AM</strong><small>Próximo horario libre</small></div></div><div class="trainer-footer"><div><small>Sesión desde</small><strong>$70.000</strong></div><button class="btn btn-primary btn-card" data-action="view-trainer" data-id="4">Ver perfil</button></div></div>
+    </article></div>
+        <div class="empty-state" id="trainerEmpty" hidden>No encontramos entrenadores con esos filtros.</div>
+      </div>
+    </section>
+
+    <section class="section services-section" id="servicios">
+      <div class="container">
+        <div class="section-heading service-heading">
+          <div>
+            <span class="section-kicker">Servicios</span>
+            <h2>Todo lo que<br />necesitas para<br />entrenar</h2>
+          </div>
+          <p>Desde sesiones individuales hasta programas completos. Elige el formato que mejor se adapte a tu estilo de vida y objetivos.</p>
+        </div>
+        <div class="services-grid" id="servicesGrid"><article class="service-card service-large"><div class="service-image"><img src="assets/images/service-personal.jpg" alt="Entrenamiento personalizado presencial" /><span>Más popular</span></div><div class="service-content"><i>⌁</i><h3>Entrenamiento personalizado presencial</h3><p>Sesiones uno a uno con un entrenador en el gimnasio o espacio que prefieras. Plan adaptado a tus metas.</p><div class="service-footer"><strong>Desde $80.000</strong><button data-action="quick-book-service" data-service="1">Reservar</button></div></div></article><article class="service-card "><div class="service-image"><img src="assets/images/trainer-laura.jpg" alt="Entrenamiento virtual" /><span>Online</span></div><div class="service-content"><i>▣</i><h3>Entrenamiento virtual</h3><p>Sesiones en vivo por videollamada desde la comodidad de tu hogar.</p><div class="service-footer"><strong>Desde $45.000</strong><button data-action="quick-book-service" data-service="2">Reservar</button></div></div></article><article class="service-card "><div class="service-image"><img src="assets/images/service-gym.jpg" alt="Planes mensuales" /><span>Ahorra 20%</span></div><div class="service-content"><i>⌁</i><h3>Planes mensuales</h3><p>Suscripción mensual con acceso ilimitado a sesiones y seguimiento.</p><div class="service-footer"><strong>Desde $280.000</strong><button data-action="quick-book-service" data-service="3">Reservar</button></div></div></article><article class="service-card "><div class="service-image"><img src="assets/images/service-running.jpg" alt="Running y resistencia" /><span>Nuevo</span></div><div class="service-content"><i>↗</i><h3>Running y resistencia</h3><p>Plan de carrera, técnica, ritmo y seguimiento semanal.</p><div class="service-footer"><strong>Desde $60.000</strong><button data-action="quick-book-service" data-service="4">Reservar</button></div></div></article><article class="service-card "><div class="service-image"><img src="assets/images/service-functional.jpg" alt="Entrenamiento funcional" /><span>Incluido</span></div><div class="service-content"><i>⌁</i><h3>Entrenamiento funcional</h3><p>Movilidad, fuerza y acondicionamiento para la vida diaria.</p><div class="service-footer"><strong>Desde $70.000</strong><button data-action="quick-book-service" data-service="5">Reservar</button></div></div></article></div>
+      </div>
+    </section>
+
+    <section class="section benefits-section" id="funcionalidades">
+      <div class="container">
+        <div class="benefits-top">
+          <div>
+            <span class="section-kicker">Beneficios</span>
+            <h2>¿Por qué elegir<br />Trainer Booking?</h2>
+            <p>Diseñada desde cero para quienes se toman en serio su entrenamiento. Cada función existe para ayudarte a alcanzar tu mejor versión.</p>
+            <button class="btn btn-primary" data-action="open-dashboard">Ver mis reservas <span>→</span></button>
+          </div>
+          <div class="benefit-list">
+            <article><i>♛</i><div><h3>Entrenadores certificados</h3><p>Credenciales verificadas y experiencia comprobada antes de publicar cada perfil.</p></div></article>
+            <article><i>▣</i><div><h3>Reserva rápida de horarios</h3><p>Consulta disponibilidad real y agenda tu sesión en menos de 60 segundos.</p></div></article>
+            <article><i>▱</i><div><h3>Pagos 100% seguros</h3><p>Transacciones protegidas, múltiples métodos de pago y registro automático.</p></div></article>
+          </div>
+        </div>
+        <div class="feature-grid">
+          <article><i>⌁</i><h3>Seguimiento de entrenamientos</h3><p>Registra cada sesión y consulta tu historial desde el perfil.</p></article>
+          <article><i>◷</i><h3>Control de progreso</h3><p>Revisa métricas, comparativas y evolución de tus objetivos.</p></article>
+          <article><i>◉</i><h3>Disponibilidad 24/7</h3><p>Reserva, cancela o reprograma desde cualquier dispositivo.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section process-section" id="como-funciona">
+      <div class="container">
+        <div class="section-heading centered">
+          <span class="section-kicker">Proceso simple</span>
+          <h2>Reserva en cuatro pasos</h2>
+          <p>De la búsqueda a tu entrenamiento, sin llamadas ni cruces de mensajes.</p>
+        </div>
+        <div class="process-grid">
+          <article><span>01</span><i>⌕</i><h3>Busca</h3><p>Filtra por ciudad, especialidad, modalidad y calificación.</p></article>
+          <article><span>02</span><i>✓</i><h3>Elige</h3><p>Compara perfiles, servicios, experiencia y reseñas.</p></article>
+          <article><span>03</span><i>◷</i><h3>Reserva</h3><p>Selecciona fecha y una franja disponible en tiempo real.</p></article>
+          <article><span>04</span><i>▰</i><h3>Paga</h3><p>Confirma el pago y recibe la reserva en tu panel.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <div class="container cta-card">
+        <div><span class="section-kicker">Tu próximo nivel empieza aquí</span><h2>Entrena con dirección.<br />Avanza con resultados.</h2></div>
+        <button class="btn btn-primary" data-action="open-dashboard">Abrir mi panel <span>→</span></button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="#inicio"><span>TRAINER</span><strong>BOOKING</strong></a><p>Entrenamiento profesional, reservas simples y resultados medibles.</p></div>
+      <div><h4>Plataforma</h4><a href="#entrenadores">Entrenadores</a><a href="#servicios">Servicios</a><a href="#como-funciona">Cómo funciona</a></div>
+      <div><h4>Cuenta</h4><button data-action="open-dashboard">Mis reservas</button><button data-action="logout">Cerrar sesión</button><a href="index.html">Cambiar de rol</a></div>
+      <div><h4>Contacto</h4><a href="mailto:hola@trainerbooking.com">hola@trainerbooking.com</a><span>Colombia</span></div>
+    </div>
+    <div class="container footer-bottom"><span>© 2026 Trainer Booking</span><span>Frontend conectado a API REST</span></div>
+  </footer>
+
+  <div class="modal-root" id="modalRoot" aria-live="polite"></div>
+  <div class="toast-region" id="toastRegion" aria-live="assertive"></div>
+
+  <script>
+    window.TRAINER_BOOKING_CONFIG = {
+      apiBase: 'http://localhost:4000/api/v1',
+      demoFallback: true
+    };
+  </script>
+  <script type="module" src="assets/js/app.js"></script>
+</body>
+</html>

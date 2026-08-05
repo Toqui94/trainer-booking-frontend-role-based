@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Acceso por roles a Trainer Booking: cliente, entrenador o administrador." />
+  <meta name="theme-color" content="#050b19" />
+  <title>Acceso | Trainer Booking</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23c8ff2c%22/><path d=%22M22 44h12v-8h8v28h-8v-8H22zm56 0H66v-8h-8v28h8v-8h12zM42 46h16v8H42z%22 fill=%22%23050b19%22/></svg>" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="assets/css/portal.css" />
+</head>
+<body class="portal-body">
+  <div class="noise" aria-hidden="true"></div>
+  <main class="access-shell">
+    <section class="access-visual" aria-label="Presentación de Trainer Booking">
+      <img src="assets/images/hero-athlete.jpg" alt="Atleta entrenando" />
+      <div class="access-visual-shade"></div>
+      <div class="access-brand-row">
+        <a class="brand" href="index.html"><span>TRAINER</span><strong>BOOKING</strong></a>
+        <span class="system-pill"><i></i> Plataforma activa</span>
+      </div>
+      <div class="access-copy">
+        <div class="eyebrow"><span></span> Gestión integral de entrenamiento</div>
+        <h1>UN SOLO SISTEMA.<br><em>TRES EXPERIENCIAS.</em></h1>
+        <p>El acceso cambia según tu rol. Cada usuario entra directamente al módulo que necesita, con permisos, funciones y navegación independientes.</p>
+        <div class="access-features">
+          <div><i>✓</i><span><strong>Clientes</strong><small>Buscan, reservan y pagan entrenamientos.</small></span></div>
+          <div><i>⌁</i><span><strong>Entrenadores</strong><small>Administran agenda, servicios e ingresos.</small></span></div>
+          <div><i>⚙</i><span><strong>Administración</strong><small>Controla usuarios, pagos y operación.</small></span></div>
+        </div>
+      </div>
+      <div class="access-trust"><span>🔒 Acceso seguro por rol</span><span>MySQL + API REST</span><span>Responsive</span></div>
+    </section>
+
+    <section class="access-panel">
+      <div class="access-panel-inner">
+        <div class="mobile-brand"><a class="brand" href="index.html"><span>TRAINER</span><strong>BOOKING</strong></a></div>
+        <div class="access-heading">
+          <span class="section-kicker">Portal principal</span>
+          <h2>Selecciona tu rol</h2>
+          <p>Primero indica cómo vas a ingresar. Después de validar tus credenciales, el sistema te enviará automáticamente a tu panel.</p>
+        </div>
+
+        <div class="access-progress" aria-label="Proceso de acceso">
+          <div class="active"><span>1</span><small>Elegir rol</small></div>
+          <i></i>
+          <div><span>2</span><small>Credenciales</small></div>
+          <i></i>
+          <div><span>3</span><small>Panel</small></div>
+        </div>
+
+        <div class="role-grid" id="roleGrid">
+          <button class="role-card selected" type="button" data-role="CLIENTE">
+            <span class="role-icon">⌕</span>
+            <span><strong>Cliente</strong><small>Reservar entrenamientos</small></span>
+            <i>→</i>
+          </button>
+          <button class="role-card" type="button" data-role="ENTRENADOR">
+            <span class="role-icon">🏋</span>
+            <span><strong>Entrenador</strong><small>Gestionar agenda y servicios</small></span>
+            <i>→</i>
+          </button>
+          <button class="role-card" type="button" data-role="ADMINISTRADOR">
+            <span class="role-icon">⚙</span>
+            <span><strong>Administrador</strong><small>Control general del sistema</small></span>
+            <i>→</i>
+          </button>
+        </div>
+
+        <div class="selected-role-bar">
+          <div><span>Ingresar como</span><strong id="selectedRoleLabel">Cliente</strong></div>
+          <button type="button" data-action="change-role">Cambiar rol</button>
+        </div>
+
+        <form id="portalLoginForm" class="portal-form" novalidate>
+          <input type="hidden" name="rol" id="selectedRole" value="CLIENTE" />
+          <label class="field field-full"><span>Correo electrónico</span><input type="email" name="correo" required autocomplete="username" placeholder="correo@ejemplo.com" /></label>
+          <label class="field field-full"><span>Contraseña</span><div class="password-control"><input type="password" name="password" required minlength="8" autocomplete="current-password" placeholder="••••••••" /><button type="button" data-action="toggle-password" aria-label="Mostrar contraseña">◉</button></div></label>
+          <div class="form-options"><label><input type="checkbox" name="remember" /> Mantener sesión</label><button type="button" data-action="forgot-password">¿Olvidaste tu contraseña?</button></div>
+          <button class="btn btn-primary btn-full access-submit" type="submit">Entrar al panel de cliente <span>→</span></button>
+        </form>
+
+        <div class="role-register" id="roleRegister">
+          <span>¿No tienes una cuenta de cliente?</span>
+          <button type="button" data-action="open-role-register">Crear cuenta</button>
+        </div>
+
+        <div class="demo-access">
+          <span>Vista rápida del prototipo</span>
+          <div><button data-demo-role="CLIENTE">Demo cliente</button><button data-demo-role="ENTRENADOR">Demo entrenador</button><button data-demo-role="ADMINISTRADOR">Demo administrador</button></div>
+        </div>
+        <p class="security-note">El rol real se valida en el servidor. Seleccionarlo aquí no otorga permisos por sí solo.</p>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-root" id="modalRoot" aria-live="polite"></div>
+  <div class="toast-region" id="toastRegion" aria-live="assertive"></div>
+  <script>window.TRAINER_BOOKING_CONFIG={apiBase:'http://localhost:4000/api/v1',demoFallback:true};</script>
+  <script type="module" src="assets/js/portal.js"></script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#050b19" />
+  <title>Panel administrativo | Trainer Booking</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23c8ff2c%22/><path d=%22M22 44h12v-8h8v28h-8v-8H22zm56 0H66v-8h-8v28h8v-8h12zM42 46h16v8H42z%22 fill=%22%23050b19%22/></svg>" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="assets/css/dashboard.css" />
+</head>
+<body class="dashboard-body">
+  <div class="noise" aria-hidden="true"></div>
+  <div class="mobile-backdrop" data-action="close-sidebar"></div>
+  <div class="app-shell">
+    <aside class="app-sidebar" id="appSidebar">
+      <a class="brand" href="administrador.html"><span>TRAINER</span><strong>BOOKING</strong></a>
+      <span class="sidebar-role"><i></i> Administración</span>
+      <nav class="sidebar-nav" aria-label="Panel administrativo">
+        <button class="active" data-view="resumen"><i>▦</i> Resumen general</button>
+        <button data-view="entrenadores"><i>🏋</i> Entrenadores</button>
+        <button data-view="usuarios"><i>◉</i> Usuarios</button>
+        <button data-view="reservas"><i>◷</i> Reservas</button>
+        <button data-view="pagos"><i>$</i> Pagos</button>
+        <button data-view="especialidades"><i>★</i> Especialidades</button>
+        <button data-view="reportes"><i>↗</i> Reportes</button>
+        <button data-view="auditoria"><i>☷</i> Auditoría</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="sidebar-user"><div class="sidebar-user-avatar" data-user-initials>AP</div><div><strong data-user-name>Administrador Principal</strong><small>Acceso total</small></div></div>
+        <button class="sidebar-logout" data-action="logout">Cerrar sesión y volver al portal</button>
+      </div>
+    </aside>
+
+    <main class="app-main">
+      <header class="app-topbar">
+        <div style="display:flex;align-items:center;gap:11px"><button class="icon-button mobile-sidebar-toggle" data-action="open-sidebar">☰</button><div class="topbar-title"><span>Trainer Booking / Administración</span><h1 id="topbarTitle">Resumen general</h1></div></div>
+        <div class="topbar-actions">
+          <button class="icon-button" title="Alertas">!<span class="badge">7</span></button>
+          <button class="icon-button" title="Configuración">⚙</button>
+          <div class="topbar-profile"><div class="avatar" data-user-initials>AP</div><div><strong data-user-name>Administrador Principal</strong><small>Administrador</small></div></div>
+        </div>
+      </header>
+
+      <div class="content-wrap">
+        <section class="dashboard-view" data-dashboard-view="resumen">
+          <div class="page-head"><div><span class="section-kicker">Control del sistema</span><h2>Resumen general</h2><p>Indicadores operativos, financieros y de usuarios de Trainer Booking.</p></div><div class="page-head-actions"><button class="btn btn-outline btn-small" data-view-target="reportes">Generar reporte</button><button class="btn btn-primary btn-small" data-view-target="entrenadores">Revisar pendientes</button></div></div>
+          <div class="dashboard-grid metric-grid">
+            <article class="metric-card"><div class="metric-top"><i class="metric-icon">◉</i><span class="metric-trend">+8,3%</span></div><strong>12.486</strong><span>Usuarios registrados</span></article>
+            <article class="metric-card"><div class="metric-top"><i class="metric-icon">🏋</i><span class="metric-trend">214 verificados</span></div><strong>238</strong><span>Entrenadores</span></article>
+            <article class="metric-card"><div class="metric-top"><i class="metric-icon">◷</i><span class="metric-trend">+342 este mes</span></div><strong>3.928</strong><span>Reservas totales</span></article>
+            <article class="metric-card"><div class="metric-top"><i class="metric-icon">$</i><span class="metric-trend">+16,8%</span></div><strong>$84,6 M</strong><span>Valor transaccionado</span></article>
+          </div>
+
+          <div class="dashboard-grid main-grid">
+            <article class="panel-card">
+              <div class="panel-head"><div><h3>Entrenadores pendientes de verificación</h3><p>Requieren validación documental</p></div><button data-view-target="entrenadores">Ver todos →</button></div>
+              <div class="data-table-wrap"><table class="data-table"><thead><tr><th>Entrenador</th><th>Ciudad</th><th>Experiencia</th><th>Registro</th><th>Acciones</th></tr></thead><tbody><tr><td><div class="table-user"><span class="mini-avatar">JM</span><strong>Julián Méndez</strong></div></td><td>Bogotá</td><td>6 años</td><td>Hoy, 8:24 AM</td><td><div class="table-actions"><button class="primary">Revisar</button><button class="danger">Rechazar</button></div></td></tr><tr><td><div class="table-user"><span class="mini-avatar">CV</span><strong>Camila Vélez</strong></div></td><td>Medellín</td><td>4 años</td><td>Ayer, 5:18 PM</td><td><div class="table-actions"><button class="primary">Revisar</button><button class="danger">Rechazar</button></div></td></tr><tr><td><div class="table-user"><span class="mini-avatar">RO</span><strong>Ricardo Ospina</strong></div></td><td>Cali</td><td>9 años</td><td>Ayer, 10:42 AM</td><td><div class="table-actions"><button class="primary">Revisar</button><button class="danger">Rechazar</button></div></td></tr></tbody></table></div>
+            </article>
+            <article class="panel-card">
+              <div class="panel-head"><div><h3>Alertas operativas</h3><p>Elementos que necesitan atención</p></div><button>Gestionar</button></div>
+              <div class="activity-list"><div class="activity-item"><i>!</i><div><strong>7 pagos en disputa</strong><p>Requieren validación manual de soporte.</p></div></div><div class="activity-item"><i>◷</i><div><strong>14 reservas vencidas</strong><p>Pendientes por conciliación o cierre.</p></div></div><div class="activity-item"><i>★</i><div><strong>5 documentos por revisar</strong><p>Certificaciones cargadas recientemente.</p></div></div><div class="activity-item"><i>✓</i><div><strong>Base de datos operativa</strong><p>Última verificación: hace 3 minutos.</p></div></div></div>
+            </article>
+          </div>
+
+          <div class="dashboard-grid main-grid">
+            <article class="panel-card"><div class="panel-head"><div><h3>Reservas por día</h3><p>Últimos siete días</p></div><button data-view-target="reportes">Analizar →</button></div><div class="chart-area"><div class="chart-bars"><div class="chart-bar-wrap"><div class="chart-bar" style="height:48%"></div><span>Lun</span></div><div class="chart-bar-wrap"><div class="chart-bar" style="height:65%"></div><span>Mar</span></div><div class="chart-bar-wrap"><div class="chart-bar" style="height:72%"></div><span>Mié</span></div><div class="chart-bar-wrap"><div class="chart-bar" style="height:58%"></div><span>Jue</span></div><div class="chart-bar-wrap"><div class="chart-bar" style="height:81%"></div><span>Vie</span></div><div class="chart-bar-wrap"><div class="chart-bar" style="height:100%"></div><span>Sáb</span></div><div class="chart-bar-wrap"><div class="chart-bar" style="height:74%"></div><span>Dom</span></div></div><div class="chart-summary"><span>Reservas semanales<br><strong>1.126</strong></span><span>Tasa de confirmación<br><strong>91,4%</strong></span></div></div></article>
+            <article class="panel-card"><div class="panel-head"><div><h3>Distribución de usuarios</h3><p>Roles activos</p></div></div><div class="chart-area"><div style="display:grid;place-items:center;min-height:170px"><div style="width:145px;height:145px;border-radius:50%;background:conic-gradient(var(--lime) 0 76%,#61749e 76% 94%,#ffcb57 94% 100%);display:grid;place-items:center;box-shadow:inset 0 0 0 30px #0d1731"><div style="text-align:center"><strong style="font-size:24px">12.486</strong><span style="display:block;color:var(--muted);font-size:8px">Total usuarios</span></div></div></div><div class="chart-summary"><span>Clientes<br><strong>76%</strong></span><span>Entrenadores<br><strong>18%</strong></span><span>Administradores<br><strong>6%</strong></span></div></div></article>
+          </div>
+        </section>
+
+        <section class="dashboard-view" data-dashboard-view="entrenadores" hidden><div class="page-head"><div><span class="section-kicker">Gestión profesional</span><h2>Entrenadores</h2><p>Aprueba, rechaza, suspende y consulta perfiles profesionales.</p></div><button class="btn btn-outline btn-small">Exportar listado</button></div><article class="panel-card"><div class="search-toolbar"><input type="search" placeholder="Buscar entrenador, correo o documento" /><select><option>Todos los estados</option><option>Pendientes</option><option>Aprobados</option><option>Rechazados</option></select><select><option>Todas las ciudades</option><option>Bogotá</option><option>Medellín</option><option>Cali</option></select></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>Entrenador</th><th>Documento</th><th>Ciudad</th><th>Calificación</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr><td><div class="table-user"><span class="mini-avatar">JM</span><strong>Julián Méndez</strong></div></td><td>1.018.452.321</td><td>Bogotá</td><td>Sin calificar</td><td><span class="status-chip pending">Pendiente</span></td><td><div class="table-actions"><button class="primary">Aprobar</button><button class="danger">Rechazar</button><button>Ver</button></div></td></tr><tr><td><div class="table-user"><span class="mini-avatar">CM</span><strong>Carlos Martínez</strong></div></td><td>79.452.885</td><td>Cali</td><td>★ 4.9</td><td><span class="status-chip">Aprobado</span></td><td><div class="table-actions"><button>Ver</button><button class="danger">Suspender</button></div></td></tr><tr><td><div class="table-user"><span class="mini-avatar">CV</span><strong>Camila Vélez</strong></div></td><td>1.152.874.334</td><td>Medellín</td><td>Sin calificar</td><td><span class="status-chip pending">Pendiente</span></td><td><div class="table-actions"><button class="primary">Aprobar</button><button class="danger">Rechazar</button><button>Ver</button></div></td></tr></tbody></table></div></article></section>
+
+        <section class="dashboard-view" data-dashboard-view="usuarios" hidden><div class="page-head"><div><span class="section-kicker">Cuentas</span><h2>Usuarios</h2><p>Consulta el estado, los roles y la actividad de cada cuenta.</p></div><button class="btn btn-primary btn-small">Crear usuario +</button></div><article class="panel-card"><div class="search-toolbar"><input type="search" placeholder="Buscar usuario o correo" /><select><option>Todos los roles</option><option>Cliente</option><option>Entrenador</option><option>Administrador</option></select><select><option>Todos los estados</option><option>Activo</option><option>Inactivo</option><option>Bloqueado</option></select></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>Usuario</th><th>Correo</th><th>Rol</th><th>Registro</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr><td><div class="table-user"><span class="mini-avatar">AG</span><strong>Ana Gómez</strong></div></td><td>ana@email.com</td><td>Cliente</td><td>12 jul 2026</td><td><span class="status-chip">Activo</span></td><td><div class="table-actions"><button>Ver</button><button class="danger">Bloquear</button></div></td></tr><tr><td><div class="table-user"><span class="mini-avatar">CM</span><strong>Carlos Martínez</strong></div></td><td>carlos@trainer.com</td><td>Entrenador</td><td>8 mar 2026</td><td><span class="status-chip">Activo</span></td><td><div class="table-actions"><button>Ver</button><button class="danger">Bloquear</button></div></td></tr></tbody></table></div></article></section>
+
+        <section class="dashboard-view" data-dashboard-view="reservas" hidden><div class="page-head"><div><span class="section-kicker">Operación</span><h2>Reservas</h2><p>Seguimiento del ciclo completo de las reservas.</p></div><button class="btn btn-outline btn-small">Exportar reporte</button></div><article class="panel-card"><div class="search-toolbar"><input type="search" placeholder="Buscar por cliente, entrenador o referencia" /><select><option>Todos los estados</option><option>Pendiente pago</option><option>Confirmada</option><option>Completada</option><option>Cancelada</option><option>En disputa</option></select><input type="date" value="2026-07-15" /></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>Reserva</th><th>Cliente</th><th>Entrenador</th><th>Fecha</th><th>Valor</th><th>Estado</th></tr></thead><tbody><tr><td><strong>#TB-3928</strong></td><td>Ana Gómez</td><td>Carlos Martínez</td><td>15 jul · 8:00 AM</td><td>$80.000</td><td><span class="status-chip">Confirmada</span></td></tr><tr><td><strong>#TB-3927</strong></td><td>Laura Castillo</td><td>Sofía Hernández</td><td>15 jul · 9:00 AM</td><td>$70.000</td><td><span class="status-chip pending">Pendiente pago</span></td></tr></tbody></table></div></article></section>
+
+        <section class="dashboard-view" data-dashboard-view="pagos" hidden><div class="page-head"><div><span class="section-kicker">Transacciones</span><h2>Pagos</h2><p>Conciliación, liberación, reembolsos y disputas.</p></div><button class="btn btn-primary btn-small">Conciliar pagos</button></div><div class="dashboard-grid metric-grid"><article class="metric-card"><div class="metric-top"><i class="metric-icon">$</i><span class="metric-trend">Julio</span></div><strong>$84,6 M</strong><span>Procesado</span></article><article class="metric-card"><div class="metric-top"><i class="metric-icon">✓</i><span class="metric-trend">1.102 pagos</span></div><strong>$71,3 M</strong><span>Aprobado</span></article><article class="metric-card"><div class="metric-top"><i class="metric-icon">◷</i><span class="metric-trend">89 pagos</span></div><strong>$6,8 M</strong><span>Pendiente</span></article><article class="metric-card danger"><div class="metric-top"><i class="metric-icon">!</i><span class="metric-trend">7 casos</span></div><strong>$940.000</strong><span>En disputa</span></article></div></section>
+
+        <section class="dashboard-view" data-dashboard-view="especialidades" hidden><div class="page-head"><div><span class="section-kicker">Catálogo</span><h2>Especialidades</h2><p>Administra la clasificación disponible para entrenadores.</p></div><button class="btn btn-primary btn-small">Nueva especialidad +</button></div><div class="quick-grid"><article class="quick-card"><i>🏋</i><strong>Fuerza e hipertrofia</strong><small>48 entrenadores vinculados</small></article><article class="quick-card"><i>⌁</i><strong>Entrenamiento funcional</strong><small>64 entrenadores vinculados</small></article><article class="quick-card"><i>↗</i><strong>Cardio y resistencia</strong><small>39 entrenadores vinculados</small></article></div></section>
+
+        <section class="dashboard-view" data-dashboard-view="reportes" hidden><div class="page-head"><div><span class="section-kicker">Inteligencia operativa</span><h2>Reportes</h2><p>Indicadores de crecimiento, ingresos, reservas y desempeño.</p></div><button class="btn btn-primary btn-small">Generar reporte +</button></div><div class="quick-grid"><button class="quick-card"><i>◉</i><strong>Usuarios y crecimiento</strong><small>Altas, bajas, roles y estados</small></button><button class="quick-card"><i>◷</i><strong>Reservas y asistencia</strong><small>Conversión, cancelación y no asistencia</small></button><button class="quick-card"><i>$</i><strong>Ingresos y pagos</strong><small>Volumen, comisiones y reembolsos</small></button></div></section>
+
+        <section class="dashboard-view" data-dashboard-view="auditoria" hidden><div class="page-head"><div><span class="section-kicker">Trazabilidad</span><h2>Auditoría</h2><p>Registro de acciones críticas realizadas en el sistema.</p></div><button class="btn btn-outline btn-small">Descargar bitácora</button></div><article class="panel-card"><div class="data-table-wrap"><table class="data-table"><thead><tr><th>Fecha</th><th>Usuario</th><th>Acción</th><th>Descripción</th></tr></thead><tbody><tr><td>15 jul · 8:31 PM</td><td>Administrador Principal</td><td><strong>APROBAR_ENTRENADOR</strong></td><td>Aprobación del perfil #218</td></tr><tr><td>15 jul · 7:42 PM</td><td>Sistema</td><td><strong>EXPIRAR_RESERVA</strong></td><td>Reserva #3925 vencida por falta de pago</td></tr><tr><td>15 jul · 6:18 PM</td><td>Administrador Principal</td><td><strong>REEMBOLSO</strong></td><td>Reembolso aprobado para la reserva #3918</td></tr></tbody></table></div></article></section>
+      </div>
+    </main>
+  </div>
+  <div class="toast-region" id="toastRegion" aria-live="assertive"></div>
+  <script>window.TRAINER_BOOKING_CONFIG={apiBase:'http://localhost:4000/api/v1',demoFallback:true};</script>
+  <script type="module" src="assets/js/admin-dashboard.js"></script>
+</body>
+</html>

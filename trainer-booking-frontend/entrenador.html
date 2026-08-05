@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#050b19" />
+  <title>Panel de entrenador | Trainer Booking</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23c8ff2c%22/><path d=%22M22 44h12v-8h8v28h-8v-8H22zm56 0H66v-8h-8v28h8v-8h12zM42 46h16v8H42z%22 fill=%22%23050b19%22/></svg>" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="assets/css/dashboard.css" />
+</head>
+<body class="dashboard-body">
+  <div class="noise" aria-hidden="true"></div>
+  <div class="mobile-backdrop" data-action="close-sidebar"></div>
+  <div class="app-shell">
+    <aside class="app-sidebar" id="appSidebar">
+      <a class="brand" href="entrenador.html"><span>TRAINER</span><strong>BOOKING</strong></a>
+      <span class="sidebar-role"><i></i> Panel de entrenador</span>
+      <nav class="sidebar-nav" aria-label="Panel de entrenador">
+        <button class="active" data-view="resumen"><i>▦</i> Resumen</button>
+        <button data-view="reservas"><i>◷</i> Reservas</button>
+        <button data-view="servicios"><i>⌁</i> Servicios</button>
+        <button data-view="horarios"><i>▣</i> Horarios</button>
+        <button data-view="certificaciones"><i>★</i> Certificaciones</button>
+        <button data-view="pagos"><i>$</i> Pagos e ingresos</button>
+        <button data-view="perfil"><i>◉</i> Mi perfil</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="sidebar-user"><div class="sidebar-user-avatar" data-user-initials>CD</div><div><strong data-user-name>Carlos Demo</strong><small>Entrenador verificado</small></div></div>
+        <button class="sidebar-logout" data-action="logout">Cerrar sesión y volver al portal</button>
+      </div>
+    </aside>
+
+    <main class="app-main">
+      <header class="app-topbar">
+        <div style="display:flex;align-items:center;gap:11px"><button class="icon-button mobile-sidebar-toggle" data-action="open-sidebar">☰</button><div class="topbar-title"><span>Trainer Booking / Entrenador</span><h1 id="topbarTitle">Resumen</h1></div></div>
+        <div class="topbar-actions">
+          <button class="icon-button" title="Notificaciones">♢<span class="badge">3</span></button>
+          <button class="icon-button" title="Ayuda">?</button>
+          <div class="topbar-profile"><div class="avatar" data-user-initials>CD</div><div><strong data-user-name>Carlos Demo</strong><small>Entrenador</small></div></div>
+        </div>
+      </header>
+
+      <div class="content-wrap">
+        <section class="dashboard-view" data-dashboard-view="resumen">
+          <div class="page-head"><div><span class="section-kicker">Estado de hoy</span><h2>Buenas tardes, <span data-user-first-name>Carlos</span></h2><p>Este es el movimiento de tu agenda, tus clientes y tus ingresos.</p></div><div class="page-head-actions"><button class="btn btn-outline btn-small" data-view-target="horarios">Configurar horario</button><button class="btn btn-primary btn-small" data-view-target="servicios">Crear servicio +</button></div></div>
+          <div class="dashboard-grid metric-grid">
+            <article class="metric-card"><div class="metric-top"><i class="metric-icon">◷</i><span class="metric-trend">+2 esta semana</span></div><strong>8</strong><span>Reservas próximas</span></article>
+            <article class="metric-card"><div class="metric-top"><i class="metric-icon">✓</i><span class="metric-trend">87% asistencia</span></div><strong>24</strong><span>Sesiones completadas</span></article>
+            <article class="metric-card"><div class="metric-top"><i class="metric-icon">$</i><span class="metric-trend">+12,4%</span></div><strong>$1.420.000</strong><span>Ingresos del mes</span></article>
+            <article class="metric-card"><div class="metric-top"><i class="metric-icon">★</i><span class="metric-trend">312 reseñas</span></div><strong>4.9</strong><span>Calificación promedio</span></article>
+          </div>
+
+          <div class="dashboard-grid main-grid">
+            <article class="panel-card">
+              <div class="panel-head"><div><h3>Agenda de hoy</h3><p>Miércoles, 15 de julio de 2026</p></div><button data-view-target="reservas">Ver agenda completa →</button></div>
+              <div class="schedule-list">
+                <div class="schedule-item"><div class="schedule-time"><strong>8:00 AM</strong><small>60 min</small></div><div class="schedule-client"><div class="mini-avatar">AM</div><div><strong>Andrea Martínez</strong><small>Entrenamiento personalizado · Presencial</small></div></div><span class="status-chip">Confirmada</span></div>
+                <div class="schedule-item"><div class="schedule-time"><strong>10:30 AM</strong><small>45 min</small></div><div class="schedule-client"><div class="mini-avatar">JS</div><div><strong>Juan Sebastián</strong><small>Plan de fuerza · Presencial</small></div></div><span class="status-chip">Confirmada</span></div>
+                <div class="schedule-item"><div class="schedule-time"><strong>4:00 PM</strong><small>60 min</small></div><div class="schedule-client"><div class="mini-avatar">LC</div><div><strong>Laura Castillo</strong><small>Acondicionamiento · Virtual</small></div></div><span class="status-chip pending">Pendiente pago</span></div>
+                <div class="schedule-item"><div class="schedule-time"><strong>6:00 PM</strong><small>60 min</small></div><div class="schedule-client"><div class="mini-avatar">DR</div><div><strong>Daniel Rojas</strong><small>Hipertrofia avanzada · Presencial</small></div></div><span class="status-chip">Confirmada</span></div>
+              </div>
+            </article>
+            <article class="panel-card">
+              <div class="panel-head"><div><h3>Actividad reciente</h3><p>Últimos movimientos de tu cuenta</p></div><button>Ver todo</button></div>
+              <div class="activity-list">
+                <div class="activity-item"><i>✓</i><div><strong>Nueva reserva confirmada</strong><p>Andrea reservó una sesión para mañana · hace 8 min</p></div></div>
+                <div class="activity-item"><i>$</i><div><strong>Pago liberado</strong><p>Recibiste $72.000 por una sesión completada · hace 1 h</p></div></div>
+                <div class="activity-item"><i>★</i><div><strong>Nueva calificación</strong><p>Juan calificó tu entrenamiento con 5 estrellas · hace 3 h</p></div></div>
+                <div class="activity-item"><i>◷</i><div><strong>Cambio de horario</strong><p>Una reserva fue reprogramada al viernes · ayer</p></div></div>
+              </div>
+            </article>
+          </div>
+
+          <div class="dashboard-grid main-grid">
+            <article class="panel-card"><div class="panel-head"><div><h3>Ingresos de los últimos 7 días</h3><p>Pagos ya liberados al entrenador</p></div><button data-view-target="pagos">Detalle →</button></div><div class="chart-area"><div class="chart-bars"><div class="chart-bar-wrap"><div class="chart-bar" style="height:34%"></div><span>Lun</span></div><div class="chart-bar-wrap"><div class="chart-bar" style="height:56%"></div><span>Mar</span></div><div class="chart-bar-wrap"><div class="chart-bar" style="height:42%"></div><span>Mié</span></div><div class="chart-bar-wrap"><div class="chart-bar" style="height:78%"></div><span>Jue</span></div><div class="chart-bar-wrap"><div class="chart-bar" style="height:63%"></div><span>Vie</span></div><div class="chart-bar-wrap"><div class="chart-bar" style="height:92%"></div><span>Sáb</span></div><div class="chart-bar-wrap"><div class="chart-bar" style="height:48%"></div><span>Dom</span></div></div><div class="chart-summary"><span>Total semanal<br><strong>$486.000</strong></span><span>Promedio por sesión<br><strong>$81.000</strong></span></div></div></article>
+            <article class="panel-card"><div class="panel-head"><div><h3>Acciones rápidas</h3><p>Gestión frecuente</p></div></div><div class="quick-grid" style="grid-template-columns:1fr;padding:14px"><button class="quick-card" data-view-target="horarios"><i>▣</i><strong>Bloquear horario</strong><small>Marca una franja como no disponible</small></button><button class="quick-card" data-view-target="servicios"><i>⌁</i><strong>Nuevo servicio</strong><small>Publica una modalidad o plan</small></button><button class="quick-card" data-view-target="certificaciones"><i>★</i><strong>Subir certificado</strong><small>Actualiza tus credenciales</small></button></div></article>
+          </div>
+        </section>
+
+        <section class="dashboard-view" data-dashboard-view="reservas" hidden>
+          <div class="page-head"><div><span class="section-kicker">Agenda</span><h2>Reservas</h2><p>Consulta, confirma y completa las sesiones de tus clientes.</p></div><div class="page-head-actions"><button class="btn btn-outline btn-small">Exportar</button><button class="btn btn-primary btn-small">Bloquear franja +</button></div></div>
+          <article class="panel-card"><div class="search-toolbar"><input type="search" placeholder="Buscar cliente o servicio" /><select><option>Todos los estados</option><option>Confirmadas</option><option>Pendiente de pago</option><option>Completadas</option></select><input type="date" value="2026-07-15" /></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>Cliente</th><th>Fecha y hora</th><th>Servicio</th><th>Valor</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr><td><div class="table-user"><span class="mini-avatar">AM</span><strong>Andrea Martínez</strong></div></td><td>15 jul · 8:00 AM</td><td>Personalizado presencial</td><td>$80.000</td><td><span class="status-chip">Confirmada</span></td><td><div class="table-actions"><button class="primary">Completar</button><button>Ver</button></div></td></tr><tr><td><div class="table-user"><span class="mini-avatar">LC</span><strong>Laura Castillo</strong></div></td><td>15 jul · 4:00 PM</td><td>Acondicionamiento virtual</td><td>$65.000</td><td><span class="status-chip pending">Pendiente pago</span></td><td><div class="table-actions"><button>Ver</button><button class="danger">Cancelar</button></div></td></tr><tr><td><div class="table-user"><span class="mini-avatar">DR</span><strong>Daniel Rojas</strong></div></td><td>15 jul · 6:00 PM</td><td>Hipertrofia avanzada</td><td>$90.000</td><td><span class="status-chip">Confirmada</span></td><td><div class="table-actions"><button class="primary">Completar</button><button>Ver</button></div></td></tr></tbody></table></div></article>
+        </section>
+
+        <section class="dashboard-view" data-dashboard-view="servicios" hidden>
+          <div class="page-head"><div><span class="section-kicker">Catálogo personal</span><h2>Mis servicios</h2><p>Administra los entrenamientos que los clientes pueden reservar.</p></div><button class="btn btn-primary btn-small">Crear servicio +</button></div>
+          <div class="quick-grid"><article class="quick-card"><i>🏋</i><strong>Entrenamiento personalizado</strong><small>Presencial · 60 min · $80.000 · Activo</small></article><article class="quick-card"><i>▣</i><strong>Asesoría virtual</strong><small>Virtual · 45 min · $55.000 · Activo</small></article><article class="quick-card"><i>⌁</i><strong>Plan de hipertrofia</strong><small>Presencial · 90 min · $110.000 · Activo</small></article></div>
+        </section>
+
+        <section class="dashboard-view" data-dashboard-view="horarios" hidden><div class="page-head"><div><span class="section-kicker">Disponibilidad</span><h2>Horarios</h2><p>Define las franjas que el cliente verá al reservar.</p></div><button class="btn btn-primary btn-small">Agregar horario +</button></div><article class="panel-card"><div class="data-table-wrap"><table class="data-table"><thead><tr><th>Día</th><th>Hora inicial</th><th>Hora final</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr><td><strong>Lunes</strong></td><td>06:00 AM</td><td>08:00 PM</td><td><span class="status-chip">Disponible</span></td><td><div class="table-actions"><button>Editar</button><button class="danger">Eliminar</button></div></td></tr><tr><td><strong>Martes</strong></td><td>06:00 AM</td><td>08:00 PM</td><td><span class="status-chip">Disponible</span></td><td><div class="table-actions"><button>Editar</button><button class="danger">Eliminar</button></div></td></tr><tr><td><strong>Domingo</strong></td><td>—</td><td>—</td><td><span class="status-chip rejected">No disponible</span></td><td><div class="table-actions"><button>Configurar</button></div></td></tr></tbody></table></div></article></section>
+
+        <section class="dashboard-view" data-dashboard-view="certificaciones" hidden><div class="page-head"><div><span class="section-kicker">Credenciales</span><h2>Certificaciones</h2><p>Documentos que respaldan tu perfil profesional.</p></div><button class="btn btn-primary btn-small">Agregar certificación +</button></div><div class="quick-grid"><article class="quick-card"><i>★</i><strong>Entrenador personal certificado</strong><small>Institución Fitness Pro · 2024 · Verificada</small></article><article class="quick-card"><i>★</i><strong>Nutrición deportiva básica</strong><small>Academia SportLab · 2025 · Verificada</small></article><article class="quick-card"><i>+</i><strong>Subir otro documento</strong><small>PDF o imagen, máximo 10 MB</small></article></div></section>
+
+        <section class="dashboard-view" data-dashboard-view="pagos" hidden><div class="page-head"><div><span class="section-kicker">Finanzas</span><h2>Pagos e ingresos</h2><p>Seguimiento de pagos liberados, pendientes y acumulados.</p></div><button class="btn btn-outline btn-small">Descargar reporte</button></div><div class="dashboard-grid metric-grid"><article class="metric-card"><div class="metric-top"><i class="metric-icon">$</i><span class="metric-trend">Este mes</span></div><strong>$1.420.000</strong><span>Pagado</span></article><article class="metric-card"><div class="metric-top"><i class="metric-icon">◷</i><span class="metric-trend">4 sesiones</span></div><strong>$315.000</strong><span>Pendiente de liberar</span></article><article class="metric-card"><div class="metric-top"><i class="metric-icon">↗</i><span class="metric-trend">2026</span></div><strong>$9.850.000</strong><span>Acumulado anual</span></article><article class="metric-card"><div class="metric-top"><i class="metric-icon">▣</i><span class="metric-trend">Último pago</span></div><strong>$486.000</strong><span>Transferencia semanal</span></article></div></section>
+
+        <section class="dashboard-view" data-dashboard-view="perfil" hidden><div class="page-head"><div><span class="section-kicker">Cuenta profesional</span><h2>Mi perfil</h2><p>Información pública, especialidades y estado de verificación.</p></div><button class="btn btn-primary btn-small">Guardar cambios</button></div><article class="panel-card"><div class="empty-panel"><i>◉</i><h3>Perfil profesional completo al 92%</h3><p>Aquí se editarán la foto, descripción, ciudad, años de experiencia, especialidades y datos de contacto.</p></div></article></section>
+      </div>
+    </main>
+  </div>
+  <div class="toast-region" id="toastRegion" aria-live="assertive"></div>
+  <script>window.TRAINER_BOOKING_CONFIG={apiBase:'http://localhost:4000/api/v1',demoFallback:true};</script>
+  <script type="module" src="assets/js/trainer-dashboard.js"></script>
+</body>
+</html>
