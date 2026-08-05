@@ -168,18 +168,42 @@ async function submitLogin(form) {
 }
 
 async function submitClientRegistration(form) {
-  const payload = Object.fromEntries(new FormData(form));
+  const raw = Object.fromEntries(new FormData(form));
   const button = $('button[type="submit"]', form);
   button.disabled = true;
   button.textContent = 'Creando cuenta…';
+
   try {
-    let token;
+    let token, user;
     if (state.liveApi) {
-      const response = await api.registerClient(payload);
-      token = response.token;
-    } else token = 'demo-cliente-token';
-    const user = { id_usuario: Date.now(), nombre: payload.nombre, apellido: payload.apellido, correo: payload.correo, roles: ['CLIENTE'] };
-    setSession(token, user);
+      // 1. Crear el Usuario con rol CLIENTE
+      await api.register({
+        nombre: raw.nombre,
+        apellido: raw.apellido,
+        correo: raw.correo,
+        telefono: raw.telefono,
+        password: raw.password,
+        rol: 'CLIENTE'
+      });
+
+      // 2. Login para obtener token real + datos del usuario
+      const loginResponse = await api.login({ correo: raw.correo, password: raw.password });
+      token = loginResponse.token;
+      user = loginResponse.user;
+      setSession(token, user);   // guardamos ya, para que el siguiente request lleve el Authorization
+
+      // 3. Crear el perfil de Cliente
+      await api.createCliente({
+        idUsuario: user.id_usuario,
+        nivelExperiencia: raw.nivel_experiencia,
+        objetivoFitness: raw.objetivo_fitness
+      });
+    } else {
+      token = 'demo-cliente-token';
+      user = { id_usuario: Date.now(), nombre: raw.nombre, apellido: raw.apellido, correo: raw.correo, roles: ['CLIENTE'] };
+      setSession(token, user);
+    }
+
     localStorage.setItem('tb_demo_mode', state.liveApi ? 'false' : 'true');
     closeModal();
     toast('Cuenta de cliente creada correctamente.', 'success');
@@ -193,22 +217,42 @@ async function submitClientRegistration(form) {
 
 async function submitTrainerRegistration(form) {
   const raw = Object.fromEntries(new FormData(form));
-  const payload = {
-    ...raw,
-    anos_experiencia: Number(raw.anos_experiencia || 0),
-    especialidades: String(raw.especialidades || '').split(',').map((value) => Number(value.trim())).filter((value) => Number.isInteger(value) && value > 0)
-  };
   const button = $('button[type="submit"]', form);
   button.disabled = true;
   button.textContent = 'Enviando postulación…';
+
   try {
-    let token;
+    let token, user;
     if (state.liveApi) {
-      const response = await api.registerTrainer(payload);
-      token = response.token;
-    } else token = 'demo-entrenador-token';
-    const user = { id_usuario: Date.now(), nombre: payload.nombre, apellido: payload.apellido, correo: payload.correo, roles: ['ENTRENADOR'] };
-    setSession(token, user);
+      await api.register({
+        nombre: raw.nombre,
+        apellido: raw.apellido,
+        correo: raw.correo,
+        telefono: raw.telefono,
+        password: raw.password,
+        rol: 'ENTRENADOR'
+      });
+
+      const loginResponse = await api.login({ correo: raw.correo, password: raw.password });
+      token = loginResponse.token;
+      user = loginResponse.user;
+      setSession(token, user);
+
+      await api.createEntrenador({
+        idUsuario: user.id_usuario,
+        documento: raw.documento,
+        ciudad: raw.ciudad,
+        aniosExperiencia: Number(raw.anos_experiencia || 0),
+        descripcion: raw.descripcion
+        // nota: "especialidades" no se envía todavía — el backend aún no
+        // tiene ese vínculo implementado; queda pendiente para una fase futura
+      });
+    } else {
+      token = 'demo-entrenador-token';
+      user = { id_usuario: Date.now(), nombre: raw.nombre, apellido: raw.apellido, correo: raw.correo, roles: ['ENTRENADOR'] };
+      setSession(token, user);
+    }
+
     localStorage.setItem('tb_demo_mode', state.liveApi ? 'false' : 'true');
     closeModal();
     toast('Registro enviado. El perfil queda pendiente de verificación.', 'success');
