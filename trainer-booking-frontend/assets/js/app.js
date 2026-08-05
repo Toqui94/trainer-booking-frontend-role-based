@@ -48,18 +48,19 @@ function closeModal() {
 }
 
 function trainerCard(trainer) {
-  const specialties = String(trainer.especialidades || '').split(',').map((x) => x.trim()).filter(Boolean);
   const photo = trainer.foto || 'assets/images/trainer-carlos.jpg';
   return `
-    <article class="trainer-card" data-trainer-id="${trainer.id_entrenador}">
-      <div class="trainer-photo"><img src="${escapeHtml(photo)}" alt="${escapeHtml(trainer.nombre)} ${escapeHtml(trainer.apellido)}" onerror="this.src='assets/images/trainer-carlos.jpg'" /><div class="photo-shade"></div><span class="availability-dot"><i></i> Disponible</span><span class="rating-pill">★ ${Number(trainer.calificacion || 0).toFixed(1)}</span></div>
+    <article class="trainer-card" data-trainer-id="${trainer.id}">
+      <div class="trainer-photo">
+        <img src="${escapeHtml(photo)}" alt="${escapeHtml(trainer.nombreCompleto)}" onerror="this.src='assets/images/trainer-carlos.jpg'" />
+        <div class="photo-shade"></div>
+        <span class="rating-pill">★ ${Number(trainer.calificacion || 0).toFixed(1)}</span>
+      </div>
       <div class="trainer-body">
-        <h3>${escapeHtml(trainer.nombre)} ${escapeHtml(trainer.apellido)}</h3>
+        <h3>${escapeHtml(trainer.nombreCompleto)}</h3>
         <p>${escapeHtml(trainer.descripcion || 'Entrenador profesional verificado.')}</p>
-        <div class="trainer-meta"><span>⌁ ${Number(trainer.anos_experiencia || 0)} años exp.</span><span>☷ ${trainer.resenas || 0} reseñas</span></div>
-        <div class="tag-list">${specialties.slice(0, 3).map((item) => `<span>${escapeHtml(item)}</span>`).join('')}</div>
-        <div class="next-slot"><i>◷</i><div><strong>Disponible ${escapeHtml(trainer.disponible || 'esta semana')}</strong><small>Próximo horario libre</small></div></div>
-        <div class="trainer-footer"><div><small>Sesión desde</small><strong>${money(trainer.precio_desde)}</strong></div><button class="btn btn-primary btn-card" data-action="view-trainer" data-id="${trainer.id_entrenador}">Ver perfil</button></div>
+        <div class="trainer-meta"><span>⌁ ${Number(trainer.aniosExperiencia || 0)} años exp.</span><span>${escapeHtml(trainer.ciudad || '')}</span></div>
+        <div class="trainer-footer"><button class="btn btn-primary btn-card" data-action="view-trainer" data-id="${trainer.id}">Ver perfil</button></div>
       </div>
     </article>`;
 }
@@ -67,11 +68,9 @@ function trainerCard(trainer) {
 function renderTrainers() {
   const query = ($('#trainerSearch')?.value || '').trim().toLowerCase();
   const city = $('#cityFilter')?.value || '';
-  const mode = $('#modeFilter')?.value || '';
   let result = state.trainers.filter((t) => {
-    const haystack = `${t.nombre} ${t.apellido} ${t.especialidades} ${t.descripcion}`.toLowerCase();
-    const modeList = t.modalidades || [t.modalidad].filter(Boolean);
-    return (!query || haystack.includes(query)) && (!city || t.ciudad === city) && (!mode || modeList.some((m) => m.toLowerCase() === mode.toLowerCase()));
+    const haystack = `${t.nombreCompleto} ${t.descripcion}`.toLowerCase();
+    return (!query || haystack.includes(query)) && (!city || t.ciudad === city);
   });
   if (!state.expanded) result = result.slice(0, 4);
   $('#trainerGrid').innerHTML = result.map(trainerCard).join('');
@@ -93,21 +92,11 @@ async function loadLiveData() {
   try {
     await api.health();
     state.liveApi = true;
-    const [trainersResponse, servicesResponse] = await Promise.all([api.trainers({ limite: 30 }), api.services()]);
-    if (trainersResponse.data?.length) {
-      state.trainers = trainersResponse.data.map((t, index) => ({
-        ...demoTrainers[index % demoTrainers.length],
-        ...t,
-        foto: t.foto || demoTrainers[index % demoTrainers.length].foto,
-        modalidades: demoTrainers[index % demoTrainers.length].modalidades,
-        disponible: demoTrainers[index % demoTrainers.length].disponible,
-        resenas: demoTrainers[index % demoTrainers.length].resenas
-      }));
+    const trainers = await api.trainers();
+    if (trainers?.length) {
+      state.trainers = trainers;
     }
-    if (servicesResponse.data?.length) {
-      state.services = servicesResponse.data.slice(0, 5).map((s, index) => ({ ...demoServices[index % demoServices.length], id: s.id_servicio, title: s.nombre_servicio, description: s.descripcion || demoServices[index % demoServices.length].description, price: s.precio }));
-    }
-    renderTrainers(); renderServices();
+    renderTrainers();
     showApiBadge('API conectada', true);
   } catch {
     state.liveApi = false;
@@ -122,28 +111,34 @@ function showApiBadge(text, live) {
   badge.innerHTML = `<i></i>${text}`;
 }
 
-function findTrainer(id) { return state.trainers.find((t) => Number(t.id_entrenador) === Number(id)); }
+function findTrainer(id) { return state.trainers.find((t) => Number(t.id) === Number(id)); }
 
 async function openTrainer(id) {
   let trainer = findTrainer(id);
-  if (state.liveApi) {
-    try {
-      const response = await api.trainer(id);
-      trainer = { ...trainer, ...response.data, servicios: response.data.servicios?.length ? response.data.servicios : trainer.servicios };
-    } catch (error) { toast(error.message, 'error'); }
-  }
+  let services = [];
+  try {
+    if (state.liveApi) {
+      trainer = await api.trainer(id);
+      services = await api.services(id);
+    } else {
+      services = trainer?.servicios || [];
+    }
+  } catch (error) { toast(error.message, 'error'); }
   if (!trainer) return;
+
   state.selectedTrainer = trainer;
-  const specialties = Array.isArray(trainer.especialidades) ? trainer.especialidades.map((x) => x.nombre) : String(trainer.especialidades || '').split(',');
-  const services = trainer.servicios?.length ? trainer.servicios : demoTrainers.find((x) => x.id_entrenador === Number(id))?.servicios || [];
+  state.selectedTrainer.servicios = services;
+
   modal(`<div class="profile-modal">
-    <div class="profile-hero"><img src="${trainer.foto || 'assets/images/trainer-carlos.jpg'}" alt="${escapeHtml(trainer.nombre)}" /><div class="profile-gradient"></div><span class="profile-status"><i></i> Perfil verificado</span></div>
+    <div class="profile-hero"><img src="${trainer.foto || 'assets/images/trainer-carlos.jpg'}" alt="${escapeHtml(trainer.nombreCompleto)}" /><div class="profile-gradient"></div></div>
     <div class="profile-content">
-      <div class="profile-title"><div><span>${escapeHtml(trainer.ciudad || 'Colombia')}</span><h2>${escapeHtml(trainer.nombre)} ${escapeHtml(trainer.apellido)}</h2><p>${escapeHtml(trainer.descripcion || '')}</p></div><div class="profile-score"><strong>★ ${Number(trainer.calificacion || 0).toFixed(1)}</strong><small>${trainer.resenas || 0} reseñas</small></div></div>
-      <div class="profile-stats"><div><strong>${trainer.anos_experiencia || 0}</strong><span>Años de experiencia</span></div><div><strong>${services.length}</strong><span>Servicios activos</span></div><div><strong>${trainer.resenas || 0}</strong><span>Clientes atendidos</span></div></div>
-      <div class="profile-tags">${specialties.filter(Boolean).map((x) => `<span>${escapeHtml(x.nombre || x)}</span>`).join('')}</div>
+      <div class="profile-title">
+        <div><span>${escapeHtml(trainer.ciudad || 'Colombia')}</span><h2>${escapeHtml(trainer.nombreCompleto)}</h2><p>${escapeHtml(trainer.descripcion || '')}</p></div>
+        <div class="profile-score"><strong>★ ${Number(trainer.calificacion || 0).toFixed(1)}</strong></div>
+      </div>
+      <div class="profile-stats"><div><strong>${trainer.aniosExperiencia || 0}</strong><span>Años de experiencia</span></div><div><strong>${services.length}</strong><span>Servicios activos</span></div></div>
       <h3 class="modal-section-title">Servicios disponibles</h3>
-      <div class="profile-services">${services.map((s) => `<article><div><span>${escapeHtml(s.modalidad || 'PRESENCIAL')}</span><h4>${escapeHtml(s.nombre_servicio)}</h4><p>${escapeHtml(s.descripcion || '')}</p><small>◷ ${s.duracion} minutos</small></div><div><strong>${money(s.precio)}</strong><button class="btn btn-primary btn-small" data-action="start-booking" data-trainer="${trainer.id_entrenador}" data-service="${s.id_servicio}">Reservar</button></div></article>`).join('')}</div>
+      <div class="profile-services">${services.map((s) => `<article><div><span>${escapeHtml(s.modalidad || 'PRESENCIAL')}</span><h4>${escapeHtml(s.nombreServicio)}</h4><p>${escapeHtml(s.descripcion || '')}</p><small>◷ ${s.duracion} minutos</small></div><div><strong>${money(s.precio)}</strong><button class="btn btn-primary btn-small" data-action="start-booking" data-trainer="${trainer.id}" data-service="${s.idServicio}">Reservar</button></div></article>`).join('')}</div>
     </div>
   </div>`, { wide: true });
 }
