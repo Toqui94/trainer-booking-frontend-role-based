@@ -69,6 +69,8 @@ export const api = {
   confirmReservation: (id) => request(`/reservas/${id}/confirmar`, { method: 'POST' }),
   cancelReservation: (id) => request(`/reservas/${id}/cancelar`, { method: 'POST' }),
   completeReservation: (id) => request(`/reservas/${id}/realizar`, { method: 'POST' }),
+  clienteByUsuario: (idUsuario) => request(`/clientes/usuario/${idUsuario}`),
+  reservationsByClient: (idCliente) => request(`/reservas/cliente/${idCliente}`),
 
   // ===== Notificaciones =====
   notifications: (idUsuario) => request(`/notificaciones/usuario/${idUsuario}`),

@@ -144,8 +144,10 @@ async function openTrainer(id) {
 }
 
 function openBooking(trainerId, serviceId) {
-  const trainer = findTrainer(trainerId) || state.selectedTrainer;
-  const service = trainer?.servicios?.find((s) => Number(s.id_servicio) === Number(serviceId)) || demoTrainers.flatMap((t) => t.servicios || []).find((s) => Number(s.id_servicio) === Number(serviceId));
+  const trainer = (state.selectedTrainer && Number(state.selectedTrainer.id) === Number(trainerId))
+      ? state.selectedTrainer
+      : findTrainer(trainerId);
+  const service = trainer?.servicios?.find((s) => Number(s.idServicio) === Number(serviceId));
   if (!trainer || !service) { toast('No fue posible cargar el servicio.', 'error'); return; }
   state.booking = { trainer, service, date: todayISO(), slot: '' };
   renderBookingModal(1);
@@ -158,12 +160,16 @@ function bookingSteps(active) {
 function renderBookingModal(step) {
   const { trainer, service } = state.booking;
   if (step === 1) {
-    modal(`<div class="booking-modal">${bookingSteps(1)}<div class="booking-head"><span>Reserva de entrenamiento</span><h2>Confirma el servicio</h2></div><div class="booking-summary"><img src="${trainer.foto}" alt="" /><div><small>Entrenador</small><h3>${escapeHtml(trainer.nombre)} ${escapeHtml(trainer.apellido)}</h3><p>${escapeHtml(trainer.ciudad || '')} · ★ ${Number(trainer.calificacion || 0).toFixed(1)}</p></div></div><div class="selected-service"><div><span>${escapeHtml(service.modalidad)}</span><h3>${escapeHtml(service.nombre_servicio)}</h3><p>${escapeHtml(service.descripcion || '')}</p><small>◷ ${service.duracion} minutos</small></div><strong>${money(service.precio)}</strong></div><button class="btn btn-primary btn-full" data-action="booking-date">Elegir fecha y hora →</button></div>`);
+    modal(`<div class="booking-modal">${bookingSteps(1)}<div class="booking-head"><span>Reserva de entrenamiento</span><h2>Confirma el servicio</h2></div><div class="booking-summary"><img src="${trainer.foto || 'assets/images/trainer-carlos.jpg'}" alt="" /><div><small>Entrenador</small><h3>${escapeHtml(trainer.nombreCompleto)}</h3><p>${escapeHtml(trainer.ciudad || '')} · ★ ${Number(trainer.calificacion || 0).toFixed(1)}</p></div></div><div class="selected-service"><div><span>${escapeHtml(service.modalidad)}</span><h3>${escapeHtml(service.nombreServicio)}</h3><p>${escapeHtml(service.descripcion || '')}</p><small>◷ ${service.duracion} minutos</small></div><strong>${money(service.precio)}</strong></div><button class="btn btn-primary btn-full" data-action="booking-date">Elegir fecha y hora →</button></div>`);
   } else if (step === 2) {
-    modal(`<div class="booking-modal">${bookingSteps(2)}<div class="booking-head"><span>Disponibilidad</span><h2>Elige fecha y hora</h2></div><label class="field"><span>Fecha del entrenamiento</span><input type="date" id="bookingDate" min="${todayISO()}" value="${state.booking.date}" /></label><div class="slot-head"><h3>Horarios disponibles</h3><small id="slotStatus">Selecciona una hora</small></div><div class="slot-grid" id="slotGrid"><div class="slot-loading">Consultando disponibilidad…</div></div><button class="btn btn-primary btn-full" id="bookingContinue" data-action="booking-payment" disabled>Continuar al pago →</button></div>`);
-    loadAvailability();
+    modal(`<div class="booking-modal">${bookingSteps(2)}<div class="booking-head"><span>Fecha y hora</span><h2>Elige cuándo entrenar</h2></div>
+      <label class="field"><span>Fecha del entrenamiento</span><input type="date" id="bookingDate" min="${todayISO()}" value="${state.booking.date}" /></label>
+      <label class="field"><span>Hora de inicio</span><input type="time" id="bookingTime" value="${state.booking.slot || ''}" /></label>
+      <p style="color:var(--muted);font-size:12px">El backend validará automáticamente que el entrenador esté disponible en ese horario.</p>
+      <button class="btn btn-primary btn-full" data-action="booking-payment">Continuar →</button>
+    </div>`);
   } else {
-    modal(`<div class="booking-modal">${bookingSteps(3)}<div class="booking-head"><span>Pago seguro</span><h2>Finaliza tu reserva</h2></div><div class="payment-summary"><div><span>Entrenador</span><strong>${escapeHtml(trainer.nombre)} ${escapeHtml(trainer.apellido)}</strong></div><div><span>Servicio</span><strong>${escapeHtml(service.nombre_servicio)}</strong></div><div><span>Fecha</span><strong>${new Date(`${state.booking.date}T12:00:00`).toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long' })}</strong></div><div><span>Hora</span><strong>${timeLabel(state.booking.slot)}</strong></div><div class="total"><span>Total</span><strong>${money(service.precio)}</strong></div></div><div class="payment-methods"><label class="payment-option selected"><input type="radio" name="method" value="TARJETA" checked /><i>▰</i><span><strong>Tarjeta débito o crédito</strong><small>Visa, Mastercard y American Express</small></span></label><label class="payment-option"><input type="radio" name="method" value="TRANSFERENCIA" /><i>⇄</i><span><strong>Transferencia bancaria</strong><small>PSE o transferencia directa</small></span></label></div><button class="btn btn-primary btn-full" data-action="confirm-payment">Pagar ${money(service.precio)} →</button><p class="payment-note">🔒 Pago procesado de forma segura. En modo demostración no se realiza ningún cobro real.</p></div>`);
+    modal(`<div class="booking-modal">${bookingSteps(3)}<div class="booking-head"><span>Confirmación</span><h2>Revisa tu reserva</h2></div><div class="payment-summary"><div><span>Entrenador</span><strong>${escapeHtml(trainer.nombreCompleto)}</strong></div><div><span>Servicio</span><strong>${escapeHtml(service.nombreServicio)}</strong></div><div><span>Fecha</span><strong>${new Date(`${state.booking.date}T12:00:00`).toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long' })}</strong></div><div><span>Hora</span><strong>${timeLabel(state.booking.slot)}</strong></div><div class="total"><span>Total</span><strong>${money(service.precio)}</strong></div></div><button class="btn btn-primary btn-full" data-action="confirm-payment">Confirmar reserva →</button><p class="payment-note">La reserva queda como PENDIENTE hasta que el entrenador la confirme.</p></div>`);
   }
 }
 
@@ -187,20 +193,25 @@ function saveDemoReservation(reservation) {
 
 async function confirmPayment() {
   const button = $('[data-action="confirm-payment"]');
-  button.disabled = true; button.textContent = 'Procesando…';
+  button.disabled = true; button.textContent = 'Confirmando…';
   try {
     if (state.liveApi && getToken()) {
-      const reservation = await api.createReservation({ id_servicio: state.booking.service.id_servicio, fecha: state.booking.date, hora_inicio: state.booking.slot });
-      const method = $('input[name="method"]:checked')?.value || 'TARJETA';
-      await api.createPayment(reservation.data.id_reserva, { metodo_pago: method });
-      toast('Orden de pago creada. La reserva está pendiente de confirmación.', 'success');
+      const cliente = await api.clienteByUsuario(state.user.id_usuario);
+      await api.createReservation({
+        idCliente: cliente.idCliente,
+        idEntrenador: state.booking.trainer.id,
+        idServicio: state.booking.service.idServicio,
+        fecha: state.booking.date,
+        horaInicio: state.booking.slot
+      });
+      toast('Reserva creada. Queda pendiente de confirmación.', 'success');
     } else {
-      saveDemoReservation({ id_reserva: Date.now(), fecha: state.booking.date, hora_inicio: state.booking.slot, hora_fin: '', estado: 'CONFIRMADA', valor: state.booking.service.precio, nombre_servicio: state.booking.service.nombre_servicio, entrenador_nombre: state.booking.trainer.nombre, entrenador_apellido: state.booking.trainer.apellido, modalidad: state.booking.service.modalidad });
+      saveDemoReservation({ id: Date.now(), fecha: state.booking.date, horaInicio: state.booking.slot, estado: 'CONFIRMADA', valor: state.booking.service.precio, servicioNombre: state.booking.service.nombreServicio, entrenadorNombre: state.booking.trainer.nombreCompleto });
       toast('Reserva de demostración confirmada.', 'success');
     }
-    modal(`<div class="success-modal"><div class="success-icon">✓</div><span>Reserva confirmada</span><h2>Tu entrenamiento quedó agendado</h2><p>Te esperamos el <strong>${new Date(`${state.booking.date}T12:00:00`).toLocaleDateString('es-CO', { day: 'numeric', month: 'long' })}</strong> a las <strong>${timeLabel(state.booking.slot)}</strong> con ${escapeHtml(state.booking.trainer.nombre)}.</p><button class="btn btn-primary btn-full" data-action="open-dashboard">Ver mis reservas</button></div>`);
+    modal(`<div class="success-modal"><div class="success-icon">✓</div><span>Reserva confirmada</span><h2>Tu entrenamiento quedó agendado</h2><p>Te esperamos el <strong>${new Date(`${state.booking.date}T12:00:00`).toLocaleDateString('es-CO', { day: 'numeric', month: 'long' })}</strong> a las <strong>${timeLabel(state.booking.slot)}</strong>.</p><button class="btn btn-primary btn-full" data-action="open-dashboard">Ver mis reservas</button></div>`);
   } catch (error) {
-    button.disabled = false; button.textContent = `Pagar ${money(state.booking.service.precio)} →`;
+    button.disabled = false; button.textContent = 'Confirmar reserva →';
     if (/token|autentic|sesión|cliente/i.test(error.message)) { toast('Inicia sesión como cliente para completar la reserva.', 'error'); openLogin(); } else toast(error.message, 'error');
   }
 }
@@ -254,9 +265,27 @@ function updateSessionUI() {
 async function openDashboard() {
   let reservations = JSON.parse(localStorage.getItem('tb_demo_reservations') || '[]');
   if (state.liveApi && getToken() && getToken() !== 'demo-token') {
-    try { const response = await api.reservations(); reservations = response.data || []; } catch (error) { toast(error.message, 'error'); }
+    try {
+      const cliente = await api.clienteByUsuario(state.user.id_usuario);
+      reservations = await api.reservationsByClient(cliente.idCliente);
+    } catch (error) { toast(error.message, 'error'); }
   }
-  modal(`<div class="dashboard-modal"><div class="dashboard-head"><div><span>Panel de cliente</span><h2>Mis reservas</h2><p>${state.user ? `Cuenta de ${escapeHtml(state.user.nombre)} ${escapeHtml(state.user.apellido || '')}` : 'Vista de demostración'}</p></div><button class="btn btn-outline btn-small" data-action="logout">Cerrar sesión</button></div><div class="dashboard-tabs"><button class="active">Próximas</button><button>Historial</button><button>Notificaciones</button></div><div class="reservation-list">${reservations.length ? reservations.map((r) => `<article><div class="reservation-date"><strong>${new Date(`${r.fecha}T12:00:00`).getDate()}</strong><span>${new Date(`${r.fecha}T12:00:00`).toLocaleDateString('es-CO', { month: 'short' })}</span></div><div class="reservation-info"><span class="status status-${String(r.estado).toLowerCase()}">${String(r.estado).replaceAll('_', ' ')}</span><h3>${escapeHtml(r.nombre_servicio)}</h3><p>${escapeHtml(r.entrenador_nombre)} ${escapeHtml(r.entrenador_apellido)} · ${escapeHtml(r.modalidad || '')}</p><small>◷ ${timeLabel(r.hora_inicio)} · ${money(r.valor)}</small></div><button class="reservation-more">•••</button></article>`).join('') : '<div class="dashboard-empty"><i>◷</i><h3>Aún no tienes reservas</h3><p>Explora los entrenadores y agenda tu primera sesión.</p><button class="btn btn-primary" data-action="close-modal">Buscar entrenador</button></div>'}</div></div>`, { wide: true });
+  modal(`<div class="dashboard-modal">
+    <div class="dashboard-head"><div><span>Panel de cliente</span><h2>Mis reservas</h2><p>${state.user ? `Cuenta de ${escapeHtml(state.user.nombre)} ${escapeHtml(state.user.apellido || '')}` : 'Vista de demostración'}</p></div><button class="btn btn-outline btn-small" data-action="logout">Cerrar sesión</button></div>
+    <div class="reservation-list">${reservations.length ? reservations.map((r) => `<article>
+      <div class="reservation-date"><strong>${new Date(`${r.fecha}T12:00:00`).getDate()}</strong><span>${new Date(`${r.fecha}T12:00:00`).toLocaleDateString('es-CO', { month: 'short' })}</span></div>
+      <div class="reservation-info"><span class="status status-${String(r.estado).toLowerCase()}">${String(r.estado).replaceAll('_', ' ')}</span><h3>${escapeHtml(r.servicioNombre)}</h3><p>${escapeHtml(r.entrenadorNombre)}</p><small>◷ ${timeLabel(r.horaInicio)} · ${money(r.valor)}</small></div>
+      ${['PENDIENTE', 'CONFIRMADA'].includes(r.estado) ? `<button class="btn btn-outline btn-small" data-action="cancel-reservation" data-id="${r.id}">Cancelar</button>` : ''}
+    </article>`).join('') : '<div class="dashboard-empty"><i>◷</i><h3>Aún no tienes reservas</h3><p>Explora los entrenadores y agenda tu primera sesión.</p><button class="btn btn-primary" data-action="close-modal">Buscar entrenador</button></div>'}</div>
+  </div>`, { wide: true });
+}
+
+async function cancelReservationFlow(id) {
+  try {
+    await api.cancelReservation(id);
+    toast('Reserva cancelada.', 'success');
+    openDashboard();
+  } catch (error) { toast(error.message, 'error'); }
 }
 
 function quickBookService(serviceId) {
@@ -285,11 +314,13 @@ function handleClick(event) {
   if (action === 'quick-book-service') quickBookService(actionEl.dataset.service);
   if (action === 'open-dashboard') openDashboard();
   if (action === 'logout') logoutToPortal();
+  if (action === 'cancel-reservation') cancelReservationFlow(actionEl.dataset.id);
 }
 
 function handleChange(event) {
   if (['trainerSearch', 'cityFilter', 'modeFilter'].includes(event.target.id)) renderTrainers();
-  if (event.target.id === 'bookingDate') { state.booking.date = event.target.value; state.booking.slot = ''; $('#bookingContinue').disabled = true; loadAvailability(); }
+  if (event.target.id === 'bookingDate') { state.booking.date = event.target.value; }
+  if (event.target.id === 'bookingTime') { state.booking.slot = event.target.value; }
   if (event.target.name === 'method') { $$('.payment-option').forEach((x) => x.classList.toggle('selected', $('input', x).checked)); }
 }
 
