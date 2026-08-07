@@ -157,6 +157,45 @@ function bookingSteps(active) {
   return `<div class="booking-steps">${['Servicio', 'Fecha y hora', 'Pago'].map((label, index) => `<div class="${index + 1 <= active ? 'active' : ''}"><span>${index + 1}</span><small>${label}</small></div>`).join('')}</div>`;
 }
 
+const DIAS_SEMANA = ['DOMINGO', 'LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO'];
+
+function buildSlotsFromHorarios(horarios, duracionMin) {
+  const slots = [];
+  horarios.forEach((h) => {
+    const [hh, mm] = h.horaInicio.split(':').map(Number);
+    const [endH, endM] = h.horaFin.split(':').map(Number);
+    let current = hh * 60 + mm;
+    const end = endH * 60 + endM;
+    while (current + duracionMin <= end) {
+      const hours = String(Math.floor(current / 60)).padStart(2, '0');
+      const minutes = String(current % 60).padStart(2, '0');
+      slots.push(`${hours}:${minutes}`);
+      current += duracionMin;
+    }
+  });
+  return slots;
+}
+
+async function loadAvailability() {
+  const { trainer, service, date } = state.booking;
+  const grid = $('#slotGrid');
+  if (!grid) return;
+  grid.innerHTML = '<p class="slot-loading">Cargando horarios…</p>';
+  try {
+    const dia = DIAS_SEMANA[new Date(`${date}T12:00:00`).getDay()];
+    const horarios = await api.horariosByTrainer(trainer.id);
+    const delDia = horarios.filter((h) => h.dia === dia);
+    const slots = buildSlotsFromHorarios(delDia, service.duracion);
+    if (!slots.length) {
+      grid.innerHTML = '<p class="slot-empty">El entrenador no tiene horarios configurados para este día.</p>';
+      return;
+    }
+    grid.innerHTML = slots.map((s) => `<button type="button" class="slot-btn ${state.booking.slot === s ? 'selected' : ''}" data-slot="${s}">${s}</button>`).join('');
+  } catch (error) {
+    grid.innerHTML = `<p class="slot-empty">${escapeHtml(error.message)}</p>`;
+  }
+}
+
 function renderBookingModal(step) {
   const { trainer, service } = state.booking;
   if (step === 1) {
@@ -164,25 +203,13 @@ function renderBookingModal(step) {
   } else if (step === 2) {
     modal(`<div class="booking-modal">${bookingSteps(2)}<div class="booking-head"><span>Fecha y hora</span><h2>Elige cuándo entrenar</h2></div>
       <label class="field"><span>Fecha del entrenamiento</span><input type="date" id="bookingDate" min="${todayISO()}" value="${state.booking.date}" /></label>
-      <label class="field"><span>Hora de inicio</span><input type="time" id="bookingTime" value="${state.booking.slot || ''}" /></label>
-      <p style="color:var(--muted);font-size:12px">El backend validará automáticamente que el entrenador esté disponible en ese horario.</p>
-      <button class="btn btn-primary btn-full" data-action="booking-payment">Continuar →</button>
+      <div class="slot-grid" id="slotGrid"></div>
+      <button class="btn btn-primary btn-full" data-action="booking-payment" ${state.booking.slot ? '' : 'disabled'}>Continuar →</button>
     </div>`);
+    loadAvailability();
   } else {
     modal(`<div class="booking-modal">${bookingSteps(3)}<div class="booking-head"><span>Confirmación</span><h2>Revisa tu reserva</h2></div><div class="payment-summary"><div><span>Entrenador</span><strong>${escapeHtml(trainer.nombreCompleto)}</strong></div><div><span>Servicio</span><strong>${escapeHtml(service.nombreServicio)}</strong></div><div><span>Fecha</span><strong>${new Date(`${state.booking.date}T12:00:00`).toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long' })}</strong></div><div><span>Hora</span><strong>${timeLabel(state.booking.slot)}</strong></div><div class="total"><span>Total</span><strong>${money(service.precio)}</strong></div></div><button class="btn btn-primary btn-full" data-action="confirm-payment">Confirmar reserva →</button><p class="payment-note">La reserva queda como PENDIENTE hasta que el entrenador la confirme.</p></div>`);
   }
-}
-
-async function loadAvailability() {
-  const grid = $('#slotGrid');
-  let slots = demoSlots;
-  if (state.liveApi) {
-    try {
-      const response = await api.availability(state.booking.trainer.id_entrenador, state.booking.date, state.booking.service.id_servicio);
-      slots = response.data?.horarios?.map((x) => x.hora_inicio) || [];
-    } catch (error) { toast(error.message, 'error'); }
-  }
-  grid.innerHTML = slots.length ? slots.map((slot) => `<button class="slot" data-action="select-slot" data-slot="${slot}">${timeLabel(slot)}</button>`).join('') : '<div class="slot-empty">No hay horarios disponibles para esta fecha.</div>';
 }
 
 function saveDemoReservation(reservation) {
@@ -273,10 +300,13 @@ async function openDashboard() {
   modal(`<div class="dashboard-modal">
     <div class="dashboard-head"><div><span>Panel de cliente</span><h2>Mis reservas</h2><p>${state.user ? `Cuenta de ${escapeHtml(state.user.nombre)} ${escapeHtml(state.user.apellido || '')}` : 'Vista de demostración'}</p></div><button class="btn btn-outline btn-small" data-action="logout">Cerrar sesión</button></div>
     <div class="reservation-list">${reservations.length ? reservations.map((r) => `<article>
-      <div class="reservation-date"><strong>${new Date(`${r.fecha}T12:00:00`).getDate()}</strong><span>${new Date(`${r.fecha}T12:00:00`).toLocaleDateString('es-CO', { month: 'short' })}</span></div>
-      <div class="reservation-info"><span class="status status-${String(r.estado).toLowerCase()}">${String(r.estado).replaceAll('_', ' ')}</span><h3>${escapeHtml(r.servicioNombre)}</h3><p>${escapeHtml(r.entrenadorNombre)}</p><small>◷ ${timeLabel(r.horaInicio)} · ${money(r.valor)}</small></div>
-      ${['PENDIENTE', 'CONFIRMADA'].includes(r.estado) ? `<button class="btn btn-outline btn-small" data-action="cancel-reservation" data-id="${r.id}">Cancelar</button>` : ''}
-    </article>`).join('') : '<div class="dashboard-empty"><i>◷</i><h3>Aún no tienes reservas</h3><p>Explora los entrenadores y agenda tu primera sesión.</p><button class="btn btn-primary" data-action="close-modal">Buscar entrenador</button></div>'}</div>
+  <div class="reservation-date"><strong>${new Date(`${r.fecha}T12:00:00`).getDate()}</strong><span>${new Date(`${r.fecha}T12:00:00`).toLocaleDateString('es-CO', { month: 'short' })}</span></div>
+  <div class="reservation-info"><span class="status status-${String(r.estado).toLowerCase()}">${String(r.estado).replaceAll('_', ' ')}</span><h3>${escapeHtml(r.servicioNombre)}</h3><p>${escapeHtml(r.entrenadorNombre)}</p><small>◷ ${timeLabel(r.horaInicio)} · ${money(r.valor)}</small></div>
+  <div class="reservation-actions">
+    ${r.estado === 'PENDIENTE' ? `<button class="btn btn-primary btn-small" data-action="pay-reservation" data-id="${r.id}">Pagar ahora</button>` : ''}
+    ${['PENDIENTE', 'CONFIRMADA'].includes(r.estado) ? `<button class="btn btn-outline btn-small" data-action="cancel-reservation" data-id="${r.id}">Cancelar</button>` : ''}
+  </div>
+</article>`).join('') : '<div class="dashboard-empty"><i>◷</i><h3>Aún no tienes reservas</h3><p>Explora los entrenadores y agenda tu primera sesión.</p><button class="btn btn-primary" data-action="close-modal">Buscar entrenador</button></div>'}</div>
   </div>`, { wide: true });
 }
 
@@ -284,6 +314,15 @@ async function cancelReservationFlow(id) {
   try {
     await api.cancelReservation(id);
     toast('Reserva cancelada.', 'success');
+    openDashboard();
+  } catch (error) { toast(error.message, 'error'); }
+}
+
+async function payReservationFlow(idReserva) {
+  try {
+    const pago = await api.paymentByReservation(idReserva);
+    await api.confirmPayment(pago.idPago, { metodoPago: 'TARJETA', referenciaPago: `SIM-${Date.now()}` });
+    toast('Pago confirmado (simulado).', 'success');
     openDashboard();
   } catch (error) { toast(error.message, 'error'); }
 }
@@ -296,6 +335,9 @@ function quickBookService(serviceId) {
 }
 
 function handleClick(event) {
+  const slotBtn = event.target.closest('.slot-btn');
+  if (slotBtn) { state.booking.slot = slotBtn.dataset.slot; renderBookingModal(2); return; }
+
   const actionEl = event.target.closest('[data-action]');
   if (!actionEl) return;
   const action = actionEl.dataset.action;
@@ -308,19 +350,20 @@ function handleClick(event) {
   if (action === 'reset-filters') { $('#trainerSearch').value = ''; $('#cityFilter').value = ''; $('#modeFilter').value = ''; renderTrainers(); }
   if (action === 'start-booking') openBooking(actionEl.dataset.trainer, actionEl.dataset.service);
   if (action === 'booking-date') renderBookingModal(2);
-  if (action === 'select-slot') { $$('.slot').forEach((x) => x.classList.remove('selected')); actionEl.classList.add('selected'); state.booking.slot = actionEl.dataset.slot; $('#bookingContinue').disabled = false; $('#slotStatus').textContent = timeLabel(state.booking.slot); }
-  if (action === 'booking-payment') { if (!state.booking.slot) return; renderBookingModal(3); }
+  if (action === 'booking-payment') {
+    if (!state.booking.slot) { toast('Selecciona un horario disponible.', 'error'); return; }
+    renderBookingModal(3);
+  }
   if (action === 'confirm-payment') confirmPayment();
   if (action === 'quick-book-service') quickBookService(actionEl.dataset.service);
   if (action === 'open-dashboard') openDashboard();
   if (action === 'logout') logoutToPortal();
   if (action === 'cancel-reservation') cancelReservationFlow(actionEl.dataset.id);
+  if (action === 'pay-reservation') payReservationFlow(actionEl.dataset.id);
 }
-
 function handleChange(event) {
   if (['trainerSearch', 'cityFilter', 'modeFilter'].includes(event.target.id)) renderTrainers();
-  if (event.target.id === 'bookingDate') { state.booking.date = event.target.value; }
-  if (event.target.id === 'bookingTime') { state.booking.slot = event.target.value; }
+  if (event.target.id === 'bookingDate') { state.booking.date = event.target.value; state.booking.slot = ''; loadAvailability(); }  if (event.target.id === 'bookingTime') { state.booking.slot = event.target.value; }
   if (event.target.name === 'method') { $$('.payment-option').forEach((x) => x.classList.toggle('selected', $('input', x).checked)); }
 }
 

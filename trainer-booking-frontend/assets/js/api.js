@@ -76,9 +76,12 @@ export const api = {
   notifications: (idUsuario) => request(`/notificaciones/usuario/${idUsuario}`),
 
   // ===== Calificaciones =====
-  createRating: (idReserva, body) => request(`/calificaciones/reserva/${idReserva}`, { method: 'POST', body })
+  createRating: (idReserva, body) => request(`/calificaciones/reserva/${idReserva}`, { method: 'POST', body }),
 
-  // PENDIENTES — el backend aún no tiene estos endpoints, se construyen en Fase 6:
-  //   - disponibilidad/horarios de un entrenador
-  //   - registrar un pago
+  // Horarios
+  horariosByTrainer: (idEntrenador) => request(`/horarios/entrenador/${idEntrenador}`),
+
+  // Pagos
+  paymentByReservation: (idReserva) => request(`/pagos/reserva/${idReserva}`),
+  confirmPayment: (idPago, body) => request(`/pagos/${idPago}/confirmar`, { method: 'POST', body })
 };
