@@ -83,5 +83,24 @@ export const api = {
 
   // Pagos
   paymentByReservation: (idReserva) => request(`/pagos/reserva/${idReserva}`),
-  confirmPayment: (idPago, body) => request(`/pagos/${idPago}/confirmar`, { method: 'POST', body })
+  confirmPayment: (idPago, body) => request(`/pagos/${idPago}/confirmar`, { method: 'POST', body }),
+
+  // Servicios y horarios (gestión propia del entrenador)
+  createService: (body) => request('/servicios', { method: 'POST', body }),
+  deleteService: (id) => request(`/servicios/${id}`, { method: 'DELETE' }),
+  createHorario: (body) => request('/horarios', { method: 'POST', body }),
+  deleteHorario: (id) => request(`/horarios/${id}`, { method: 'DELETE' }),
+
+  // Entrenador ↔ usuario, y verificación (admin)
+  trainerByUser: (idUsuario) => request(`/entrenadores/usuario/${idUsuario}`),
+  updateTrainerVerification: (id, estado) => request(`/entrenadores/${id}/verificacion`, { method: 'PATCH', body: { estado } }),
+
+  // Reservas por entrenador / todas (admin, solo lectura)
+  reservationsByTrainer: (idEntrenador) => request(`/reservas/entrenador/${idEntrenador}`),
+  allReservations: () => request('/reservas'),
+
+  // Usuarios (admin)
+  users: () => request('/usuarios'),
+  updateUserStatus: (id, estado) => request(`/usuarios/${id}/estado`, { method: 'PATCH', body: { estado } }),
+
 };
