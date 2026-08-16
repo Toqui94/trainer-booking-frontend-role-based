@@ -103,4 +103,12 @@ export const api = {
   users: () => request('/usuarios'),
   updateUserStatus: (id, estado) => request(`/usuarios/${id}/estado`, { method: 'PATCH', body: { estado } }),
 
+  markNotificationRead: (id) => request(`/notificaciones/${id}/leida`, { method: 'PATCH' }),
+rateReservation: (idReserva, puntuacion, comentario) => {
+  const params = new URLSearchParams({ puntuacion });
+  if (comentario) params.set('comentario', comentario);
+  return request(`/calificaciones/reserva/${idReserva}?${params.toString()}`, { method: 'POST' });
+},
+ratingsByTrainer: (idEntrenador) => request(`/calificaciones/entrenador/${idEntrenador}`),
+
 };

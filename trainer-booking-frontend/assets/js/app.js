@@ -247,40 +247,6 @@ function authLayout(title, subtitle, form, footer) {
   return `<div class="auth-modal"><a class="brand" href="#"><span>TRAINER</span><strong>BOOKING</strong></a><div class="booking-head"><span>Cuenta personal</span><h2>${title}</h2><p>${subtitle}</p></div>${form}<div class="auth-footer">${footer}</div></div>`;
 }
 
-function openLogin() {
-  modal(authLayout('Bienvenido de nuevo', 'Ingresa para reservar y administrar tus entrenamientos.', `<form id="loginForm" class="form-grid"><label class="field field-full"><span>Correo electrónico</span><input type="email" name="correo" required placeholder="correo@ejemplo.com" /></label><label class="field field-full"><span>Contraseña</span><input type="password" name="password" required minlength="8" placeholder="••••••••" /></label><button class="btn btn-primary btn-full" type="submit">Iniciar sesión</button></form>`, `¿Todavía no tienes cuenta? <button data-action="open-register">Regístrate gratis</button>`));
-}
-
-function openRegister() {
-  modal(authLayout('Crea tu cuenta', 'Regístrate como cliente y empieza a reservar entrenamientos.', `<form id="registerForm" class="form-grid"><label class="field"><span>Nombre</span><input name="nombre" required /></label><label class="field"><span>Apellido</span><input name="apellido" required /></label><label class="field field-full"><span>Correo</span><input type="email" name="correo" required /></label><label class="field"><span>Teléfono</span><input name="telefono" inputmode="tel" /></label><label class="field"><span>Nivel</span><select name="nivel_experiencia"><option value="PRINCIPIANTE">Principiante</option><option value="INTERMEDIO">Intermedio</option><option value="AVANZADO">Avanzado</option></select></label><label class="field field-full"><span>Contraseña</span><input type="password" name="password" minlength="8" required /></label><label class="field field-full"><span>Objetivo fitness</span><textarea name="objetivo_fitness" placeholder="Ej. aumentar fuerza y mejorar resistencia"></textarea></label><button class="btn btn-primary btn-full" type="submit">Crear cuenta</button></form>`, `¿Ya tienes cuenta? <button data-action="open-login">Inicia sesión</button>`));
-}
-
-async function submitLogin(form) {
-  const data = Object.fromEntries(new FormData(form));
-  const button = $('button[type="submit"]', form); button.disabled = true; button.textContent = 'Ingresando…';
-  try {
-    if (state.liveApi) {
-      const response = await api.login(data); setSession(response.token, response.user); state.user = response.user;
-    } else {
-      const user = { id_usuario: 1, nombre: data.correo.split('@')[0], apellido: '', correo: data.correo, roles: ['CLIENTE'] }; setSession('demo-token', user); state.user = user;
-    }
-    closeModal(); updateSessionUI(); toast('Sesión iniciada correctamente.', 'success');
-  } catch (error) { button.disabled = false; button.textContent = 'Iniciar sesión'; toast(error.message, 'error'); }
-}
-
-async function submitRegister(form) {
-  const data = Object.fromEntries(new FormData(form));
-  const button = $('button[type="submit"]', form); button.disabled = true; button.textContent = 'Creando cuenta…';
-  try {
-    if (state.liveApi) {
-      const response = await api.registerClient(data); const user = { nombre: data.nombre, apellido: data.apellido, correo: data.correo, roles: ['CLIENTE'] }; setSession(response.token, user); state.user = user;
-    } else {
-      const user = { id_usuario: Date.now(), nombre: data.nombre, apellido: data.apellido, correo: data.correo, roles: ['CLIENTE'] }; setSession('demo-token', user); state.user = user;
-    }
-    closeModal(); updateSessionUI(); toast('Cuenta creada correctamente.', 'success');
-  } catch (error) { button.disabled = false; button.textContent = 'Crear cuenta'; toast(error.message, 'error'); }
-}
-
 function updateSessionUI() {
   if (!state.user) return;
   const loginButtons = $$('[data-action="open-login"]');
@@ -305,10 +271,40 @@ async function openDashboard() {
   <div class="reservation-actions">
     ${r.estado === 'PENDIENTE' ? `<button class="btn btn-primary btn-small" data-action="pay-reservation" data-id="${r.id}">Pagar ahora</button>` : ''}
     ${['PENDIENTE', 'CONFIRMADA'].includes(r.estado) ? `<button class="btn btn-outline btn-small" data-action="cancel-reservation" data-id="${r.id}">Cancelar</button>` : ''}
+    ${r.estado === 'REALIZADA' ? `<button class="btn btn-primary btn-small" data-action="rate-reservation" data-id="${r.id}">Calificar</button>` : ''}
   </div>
 </article>`).join('') : '<div class="dashboard-empty"><i>◷</i><h3>Aún no tienes reservas</h3><p>Explora los entrenadores y agenda tu primera sesión.</p><button class="btn btn-primary" data-action="close-modal">Buscar entrenador</button></div>'}</div>
   </div>`, { wide: true });
 }
+
+async function openNotifications() {
+  let notifs = [];
+  try { notifs = await api.notifications(state.user.id_usuario); } catch (error) { toast(error.message, 'error'); }
+  modal(`<div class="dashboard-modal"><div class="dashboard-head"><div><span>Centro de notificaciones</span><h2>Notificaciones</h2></div></div>
+    <div class="reservation-list">${notifs.length ? notifs.map((n) => `<article class="${n.leido ? '' : 'unread'}"><div class="reservation-info"><h3>${escapeHtml(n.titulo)}</h3><p>${escapeHtml(n.mensaje)}</p><small>${new Date(n.fecha).toLocaleString('es-CO')}</small></div>${!n.leido ? `<button class="btn btn-outline btn-small" data-action="mark-read" data-id="${n.idNotificacion}">Marcar leída</button>` : ''}</article>`).join('') : '<div class="dashboard-empty"><i>♢</i><h3>No tienes notificaciones</h3></div>'}</div>
+  </div>`, { wide: true });
+}
+
+async function markNotificationRead(id) {
+  try { await api.markNotificationRead(id); openNotifications(); } catch (error) { toast(error.message, 'error'); }
+}
+
+function rateModal(idReserva) {
+  modal(`<h2>Califica tu sesión</h2><form id="rateForm" data-reserva="${idReserva}" class="form-grid">
+    <label class="field field-full"><span>Puntuación (1 a 5)</span><input type="number" name="puntuacion" min="1" max="5" required /></label>
+    <label class="field field-full"><span>Comentario (opcional)</span><textarea name="comentario"></textarea></label>
+    <button class="btn btn-primary btn-full field-full" type="submit">Enviar calificación →</button>
+  </form>`);
+}
+
+async function submitRating(form) {
+  const raw = Object.fromEntries(new FormData(form));
+  try {
+    await api.rateReservation(form.dataset.reserva, Number(raw.puntuacion), raw.comentario);
+    closeModal(); toast('¡Gracias por tu calificación!', 'success'); openDashboard();
+  } catch (error) { toast(error.message, 'error'); }
+}
+
 
 async function cancelReservationFlow(id) {
   try {
@@ -360,6 +356,9 @@ function handleClick(event) {
   if (action === 'logout') logoutToPortal();
   if (action === 'cancel-reservation') cancelReservationFlow(actionEl.dataset.id);
   if (action === 'pay-reservation') payReservationFlow(actionEl.dataset.id);
+  if (action === 'open-notifications') openNotifications();
+  if (action === 'mark-read') markNotificationRead(actionEl.dataset.id);
+  if (action === 'rate-reservation') rateModal(actionEl.dataset.id);
 }
 function handleChange(event) {
   if (['trainerSearch', 'cityFilter', 'modeFilter'].includes(event.target.id)) renderTrainers();
@@ -370,6 +369,7 @@ function handleChange(event) {
 function handleSubmit(event) {
   if (event.target.id === 'loginForm') { event.preventDefault(); submitLogin(event.target); }
   if (event.target.id === 'registerForm') { event.preventDefault(); submitRegister(event.target); }
+  if (event.target.id === 'rateForm') { event.preventDefault(); submitRating(event.target); }
 }
 
 function init() {

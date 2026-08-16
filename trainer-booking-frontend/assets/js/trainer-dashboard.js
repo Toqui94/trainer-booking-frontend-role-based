@@ -164,6 +164,8 @@ function handleClick(event) {
   if (action === 'confirm-reserva') reservaAction(api.confirmReservation, actionEl.dataset.id, 'Reserva confirmada.');
   if (action === 'complete-reserva') reservaAction(api.completeReservation, actionEl.dataset.id, 'Sesión marcada como completada.');
   if (action === 'cancel-reserva') reservaAction(api.cancelReservation, actionEl.dataset.id, 'Reserva cancelada.');
+  if (action === 'mark-read') markNotificationRead(actionEl.dataset.id);
+  if (action === 'open-notifications') openNotifications();
 }
 
 function handleSubmit(event) {
@@ -183,5 +185,15 @@ async function init() {
     toast('No fue posible cargar tu perfil de entrenador.', 'error');
   }
 }
+
+    async function openNotifications() {
+    let notifs = [];
+    try { notifs = await api.notifications(user.id_usuario); } catch (error) { toast(error.message, 'error'); }
+    modal(`<h2>Notificaciones</h2><div class="reservation-list">${notifs.length ? notifs.map((n) => `<article class="${n.leido ? '' : 'unread'}"><div><h3>${escapeHtml(n.titulo)}</h3><p>${escapeHtml(n.mensaje)}</p><small>${new Date(n.fecha).toLocaleString('es-CO')}</small></div>${!n.leido ? `<button class="btn btn-outline btn-small" data-action="mark-read" data-id="${n.idNotificacion}">Marcar leída</button>` : ''}</article>`).join('') : '<p class="empty-hint">No tienes notificaciones.</p>'}</div>`);
+  }
+
+  async function markNotificationRead(id) {
+    try { await api.markNotificationRead(id); openNotifications(); } catch (error) { toast(error.message, 'error'); }
+  } 
 
 init();
